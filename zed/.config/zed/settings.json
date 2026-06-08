@@ -115,13 +115,13 @@
     "use_system_clipboard": "always",
   },
   "project_panel": {
-    "git_status": false,
+    "git_status": true,
     "button": true,
     "folder_icons": true,
     "indent_guides": {
       "show": "never",
     },
-    "show_diagnostics": "off",
+    "show_diagnostics": "errors",
     "sticky_scroll": false,
     "hide_root": true,
     "bold_folder_labels": false,
@@ -159,7 +159,7 @@
   "tabs": {
     "file_icons": true,
     "close_position": "right",
-    "git_status": false,
+    "git_status": true,
   },
   // Edit prediction
   "max_tabs": 5,
@@ -182,7 +182,7 @@
       "max_severity": "error",
     },
   },
-  "diagnostics_max_severity": "off",
+  "diagnostics_max_severity": "warning",
   "jsx_tag_auto_close": {
     "enabled": true,
   },
