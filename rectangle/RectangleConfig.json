@@ -1,0 +1,17 @@
+{
+  "bundleId": "com.knollsoft.Rectangle",
+  "defaults": {
+    "almostMaximizeHeight": {
+      "float": 0.98
+    },
+    "almostMaximizeWidth": {
+      "float": 0.98
+    }
+  },
+  "shortcuts": {
+    "almostMaximize": {
+      "keyCode": 42,
+      "modifierFlags": 1179648
+    }
+  }
+}
