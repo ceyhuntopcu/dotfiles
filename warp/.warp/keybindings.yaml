@@ -1,0 +1,11 @@
+---
+"workspace:toggle_vertical_tabs_panel": cmd-s
+"editor_view:insert_autosuggestion": tab
+"workspace:toggle_ai_assistant": cmd-i
+"input:toggle_workflows": none
+"workspace:toggle_navigation_palette": shift-cmd-P
+"input:open_completion_suggestions": shift-space
+"pane_group:toggle_maximize_pane": shift-cmd-enter
+"workspace:toggle_maximize_code_review_panel": none
+"workspace:toggle_command_palette": cmd-p
+"input:save_workflow": shift-cmd-s
