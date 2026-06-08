@@ -1,0 +1,17 @@
+{
+  "lastChangelogVersion": "0.78.1",
+  "theme": "twilight_light",
+  "defaultProvider": "anthropic",
+  "defaultModel": "claude-opus-4-8",
+  "defaultThinkingLevel": "high",
+  "packages": [
+    "git:github.com/nicobailon/pi-mcp-adapter"
+  ],
+  "editorPaddingX": 0,
+  "quietStartup": true,
+  "collapseChangelog": true,
+  "enableInstallTelemetry": false,
+  "compaction": {
+    "enabled": true
+  }
+}
