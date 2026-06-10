@@ -11,8 +11,16 @@
   "session": {
     "trust_all_worktrees": true,
   },
-  "theme": "Twilight Light",
-  "icon_theme": "JetBrains New UI Icons (Dark)",
+  "theme": {
+    "mode": "light",
+    "light": "Twilight Light",
+    "dark": "Twilight"
+  },
+  "icon_theme": {
+    "mode": "dark",
+    "light": "JetBrains New UI Icons (Dark)",
+    "dark": "JetBrains New UI Icons (Dark)"
+  },
   "vertical_scroll_margin": 6,
   "diff_view_style": "split",
   "use_system_window_tabs": true,
@@ -66,7 +74,7 @@
     "inactive_opacity": 1.0,
   },
   "terminal": {
-    "button": false,
+    "button": true,
     "font_family": "JetBrainsMono Nerd Font Mono",
     "blinking": "on",
     "default_height": 460,
@@ -84,7 +92,7 @@
     },
   },
   "search": {
-    "button": false,
+    "button": true,
   },
   "git": {
     "git_gutter": "tracked_files",
@@ -130,7 +138,7 @@
   },
   "outline_panel": {
     "dock": "right",
-    "button": false,
+    "button": true,
   },
   // Top bar
   "toolbar": {
@@ -141,10 +149,10 @@
   },
   // Status bar stuff
   "notification_panel": {
-    "button": false,
+    "button": true,
   },
   "inlay_hints": {
-    "enabled": true,
+    "enabled": false,
     "show_type_hints": true,
     "show_parameter_hints": true,
     "show_other_hints": true,
@@ -153,7 +161,7 @@
   },
   "tab_bar": {
     "show_nav_history_buttons": false,
-    "show": false,
+    "show": true,
     "show_tab_bar_buttons": false,
   },
   "tabs": {
@@ -162,6 +170,10 @@
     "git_status": true,
   },
   // Edit prediction
+  "features": {
+    "edit_prediction_provider": "copilot",
+  },
+  "show_edit_predictions": true,
   "max_tabs": 5,
   "status_bar": {
     "active_language_button": false,

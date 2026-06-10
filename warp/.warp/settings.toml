@@ -121,6 +121,7 @@ nld_in_terminal_enabled = false
 
 [agents.warp_agent.other]
 show_agent_notifications = false
+show_conversation_history = true
 
 [agents.voice]
 voice_input_enabled = false
@@ -136,6 +137,7 @@ right = []
 
 [terminal]
 focus_reporting_enabled = true
+mouse_reporting_enabled = false
 
 [terminal.input]
 alias_expansion_enabled = false
@@ -164,6 +166,8 @@ auto_open_code_review_pane_on_first_agent_change = false
 show_code_review_button = false
 open_code_panels_file_editor = "env_editor"
 prefer_markdown_viewer = true
+show_global_search = true
+show_project_explorer = true
 
 [accessibility]
 accessibility_verbosity = "concise"
@@ -185,3 +189,7 @@ is_settings_sync_enabled = true
 [general]
 snackbar_enabled = true
 restore_session = true
+default_session_mode = "agent"
+
+[warp_drive]
+enabled = true

@@ -1,0 +1,28 @@
+# Ghostty config — read by cmux for terminal visuals.
+# Reload with: cmux reload-config
+
+# Theme — auto-switch dark/light based on macOS appearance.
+# Custom themes from ~/.config/ghostty/themes/ (ported from Warp's Zed Twilight set).
+theme = dark:zed-twilight,light:zed-twilight-light
+font-family = "JetBrainsMono Nerd Font Mono"
+font-size = 17
+adjust-cell-height = 20%
+
+# Opaque window with heavy blur (matches Warp).
+background-opacity = 1.0
+background-blur-radius = 40
+
+# Generous padding around the terminal grid (Warp leaves breathing room).
+window-padding-x = 16
+window-padding-y = 14
+window-padding-balance = true
+
+# Cursor: blinking bar like Warp.
+cursor-style = bar
+cursor-style-blink = true
+
+# Hide mouse while typing for a cleaner feel.
+mouse-hide-while-typing = true
+
+# Smooth scroll feel.
+scrollback-limit = 100000
