@@ -1,0 +1,8 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "enabled_providers": ["github-copilot"],
+  "disabled_providers": ["opencode"],
+  "plugin": [
+    "file:///Users/ceyhuntopcu/.claude/plugins/cache/claude-plugins-official/superpowers/5.1.0/.opencode/plugins/superpowers.js"
+  ]
+}

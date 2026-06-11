@@ -12,6 +12,7 @@ cmux/       # cmux terminal (app/terminal/sidebar settings)
 warp/       # Warp terminal (settings, keybindings, themes, tab_configs)
 zed/        # Zed editor settings
 pi/         # pi agent config (settings, modes, keybindings, models)
+opencode/   # OpenCode config
 rectangle/  # Rectangle window manager (exported config, not stowed — import via app)
 Brewfile    # Homebrew packages and casks (`brew bundle dump` output)
 ```
@@ -20,7 +21,7 @@ Brewfile    # Homebrew packages and casks (`brew bundle dump` output)
 
 ```bash
 brew bundle            # install everything in Brewfile
-stow zsh starship ghostty cmux warp zed pi
+stow zsh starship ghostty cmux warp zed pi opencode
 ```
 
 Rectangle isn't stow-shaped — import `rectangle/RectangleConfig.json` from the app's settings.
