@@ -7,12 +7,10 @@ Personal macOS dotfiles managed with [GNU Stow](https://www.gnu.org/software/sto
 ```
 zsh/        # ~/.zshrc — starship, fzf, zoxide, mise, atuin, aliases
 starship/   # Starship prompt
-ghostty/    # Ghostty config — cmux reads this for terminal visuals
-cmux/       # cmux terminal (app/terminal/sidebar settings)
+ghostty/    # Ghostty config
 warp/       # Warp terminal (settings, keybindings, themes, tab_configs)
 zed/        # Zed editor settings
 pi/         # pi agent config (settings, modes, keybindings, models)
-opencode/   # OpenCode config
 rectangle/  # Rectangle window manager (exported config, not stowed — import via app)
 Brewfile    # Homebrew packages and casks (`brew bundle dump` output)
 ```
@@ -21,7 +19,7 @@ Brewfile    # Homebrew packages and casks (`brew bundle dump` output)
 
 ```bash
 brew bundle            # install everything in Brewfile
-stow zsh starship ghostty cmux warp zed pi opencode
+stow zsh starship ghostty warp zed pi
 ```
 
 Rectangle isn't stow-shaped — import `rectangle/RectangleConfig.json` from the app's settings.
@@ -30,8 +28,6 @@ Rectangle isn't stow-shaped — import `rectangle/RectangleConfig.json` from the
 
 From the repo root, `stow <name>` symlinks a package into `$HOME`
 (e.g. `stow ghostty` → `~/.config/ghostty/*`). Remove with `stow -D <name>`.
-
-After editing cmux or ghostty configs, reload in place with `cmux reload-config` (no app restart).
 
 After installing/removing brew packages, refresh the Brewfile:
 

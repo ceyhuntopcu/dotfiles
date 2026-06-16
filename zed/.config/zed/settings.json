@@ -7,14 +7,15 @@
 // custom settings, run the `open default settings` command
 // from the command palette or from `Zed` application menu.
 {
+  "proxy": "",
   "cli_default_open_behavior": "existing_window",
   "session": {
     "trust_all_worktrees": true,
   },
   "theme": {
-    "mode": "light",
+    "mode": "dark",
     "light": "Twilight Light",
-    "dark": "Twilight"
+    "dark": "Github Dark"
   },
   "icon_theme": {
     "mode": "dark",
@@ -102,7 +103,7 @@
     },
   },
   "git_panel": {
-    "dock": "right",
+    "dock": "left",
     "tree_view": false,
     "button": true,
   },
@@ -143,7 +144,7 @@
   // Top bar
   "toolbar": {
     "quick_actions": false,
-    "breadcrumbs": true,
+    "breadcrumbs": false,
     "code_actions": false,
     "selections_menu": false,
   },
@@ -174,11 +175,11 @@
     "edit_prediction_provider": "copilot",
   },
   "show_edit_predictions": true,
-  "max_tabs": 5,
+  "max_tabs": null,
   "status_bar": {
     "active_language_button": false,
     "cursor_position_button": false,
-    "experimental.show": false,
+    "experimental.show": true,
   },
   "collaboration_panel": {
     "dock": "right",
