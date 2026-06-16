@@ -1,9 +1,31 @@
 # Ghostty config.
 # Reload with: Cmd+Shift+, in Ghostty (or restart).
 
-# Theme — Twilight Light matched to Zed's "Twilight Light",
-# colors taken from ~/.config/zed/themes/twilight.json.
-theme = zed-twilight-light
+# Theme — GitHub Dark matched to Zed's "Github Dark" (Primer palette),
+# colors taken from ~/.config/zed/themes/github.json.
+theme = GitHub Dark
+background = #151b23
+foreground = #f0f6fc
+cursor-color = #0576ff
+cursor-text = #ffffff
+selection-background = #0f3f7b
+selection-foreground = #ffffff
+palette = 0=#2f3742
+palette = 1=#ff7b72
+palette = 2=#3fb950
+palette = 3=#d29922
+palette = 4=#58a6ff
+palette = 5=#be8fff
+palette = 6=#39c5cf
+palette = 7=#f0f6fc
+palette = 8=#656c76
+palette = 9=#ffa198
+palette = 10=#56d364
+palette = 11=#e3b341
+palette = 12=#79c0ff
+palette = 13=#d2a8ff
+palette = 14=#56d4dd
+palette = 15=#ffffff
 font-family = "JetBrainsMono Nerd Font Mono"
 font-size = 17
 adjust-cell-height = 20%
