@@ -367,20 +367,23 @@ async function resolveModesPath(cwd: string): Promise<string> {
     return getGlobalModesPath();
 }
 
-function inferModeFromSelection(ctx: ExtensionContext, pi: ExtensionAPI, data: ModesFile): string | null {
-    const provider = ctx.model?.provider;
-    const modelId = ctx.model?.id;
-    const thinkingLevel = pi.getThinkingLevel();
+function inferModeFromModelSelection(
+    data: ModesFile,
+    provider: string | undefined,
+    modelId: string | undefined,
+    thinkingLevel: ThinkingLevel,
+    supportsThinking: boolean,
+): string | null {
     if (!provider || !modelId) return null;
 
     // Only consider persisted/real modes (exclude the overlay "custom").
+    // Prefer named modes over the forced "default" mode when both point at the same model.
     const names = orderedModeNames(data.modes);
-
-    const supportsThinking = Boolean(ctx.model?.reasoning);
+    const preferredNames = [...names.filter((name) => name !== "default"), ...names.filter((name) => name === "default")];
 
     // 1) If thinking is supported, require an exact match so modes can differ by thinking level.
     if (supportsThinking) {
-        for (const name of names) {
+        for (const name of preferredNames) {
             const spec = data.modes[name];
             if (!spec) continue;
             if (spec.provider !== provider || spec.modelId !== modelId) continue;
@@ -393,7 +396,7 @@ function inferModeFromSelection(ctx: ExtensionContext, pi: ExtensionAPI, data: M
     // 2) If thinking is NOT supported by the model, the effective level will always be "off".
     // In that case, treat thinkingLevel differences in modes.json as non-distinguishing.
     const candidates: string[] = [];
-    for (const name of names) {
+    for (const name of preferredNames) {
         const spec = data.modes[name];
         if (!spec) continue;
         if (spec.provider !== provider || spec.modelId !== modelId) continue;
@@ -416,6 +419,16 @@ function inferModeFromSelection(ctx: ExtensionContext, pi: ExtensionAPI, data: M
     }
 
     return candidates[0] ?? null;
+}
+
+function inferModeFromSelection(ctx: ExtensionContext, pi: ExtensionAPI, data: ModesFile): string | null {
+    return inferModeFromModelSelection(
+        data,
+        ctx.model?.provider,
+        ctx.model?.id,
+        pi.getThinkingLevel(),
+        Boolean(ctx.model?.reasoning),
+    );
 }
 
 type ModeRuntime = {
@@ -1295,20 +1308,34 @@ export default function (pi: ExtensionAPI) {
         // while we are in the middle of applying a mode.
         if (runtime.applying) return;
 
-        // Manual model changes always go into the overlay "custom" mode.
+        // Manual model changes should use a named mode when the selected model matches one.
+        // Fall back to the runtime-only "custom" overlay for unconfigured models.
         await ensureRuntime(pi, ctx);
-        if (runtime.currentMode !== CUSTOM_MODE_NAME) {
-            runtime.lastRealMode = runtime.currentMode;
+        const thinkingLevel = pi.getThinkingLevel();
+        const inferred = inferModeFromModelSelection(
+            runtime.data,
+            event.model.provider,
+            event.model.id,
+            thinkingLevel,
+            Boolean(event.model.reasoning),
+        );
+
+        if (inferred) {
+            runtime.currentMode = inferred;
+            runtime.lastRealMode = inferred;
+            customOverlay = null;
+        } else {
+            if (runtime.currentMode !== CUSTOM_MODE_NAME) {
+                runtime.lastRealMode = runtime.currentMode;
+            }
+            runtime.currentMode = CUSTOM_MODE_NAME;
+            customOverlay = {
+                provider: event.model.provider,
+                modelId: event.model.id,
+                thinkingLevel,
+            };
         }
-        runtime.currentMode = CUSTOM_MODE_NAME;
 
-        customOverlay = {
-            provider: event.model.provider,
-            modelId: event.model.id,
-            thinkingLevel: pi.getThinkingLevel(),
-        };
-
-        // Do not persist/select custom.
         if (ctx.hasUI) {
             requestEditorRender?.();
             updateModeWidget(ctx);

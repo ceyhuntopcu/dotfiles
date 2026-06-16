@@ -11,6 +11,10 @@ const SETTINGS_PATH = path.join(os.homedir(), ".warp", "settings.toml");
 const STATUS_KEY = "warp-theme";
 const POLL_MS = 2000;
 
+function isWarpTerminal(): boolean {
+	return process.env.TERM_PROGRAM === "WarpTerminal";
+}
+
 type WarpPalette = {
 	accent: string;
 	background: string;
@@ -213,6 +217,10 @@ async function getSignature(themePath: string, mode: string): Promise<string> {
 
 async function syncWarpTheme(ctx: ExtensionContext, previousSignature?: string): Promise<string | undefined> {
 	if (!ctx.hasUI) return previousSignature;
+	if (!isWarpTerminal()) {
+		ctx.ui.setStatus(STATUS_KEY, undefined);
+		return previousSignature;
+	}
 
 	const resolved = await resolveWarpTheme();
 	if (!resolved) {
@@ -234,6 +242,11 @@ export default function (pi: ExtensionAPI) {
 	let signature: string | undefined;
 
 	pi.on("session_start", async (event, ctx) => {
+		if (!isWarpTerminal()) {
+			ctx.ui.setStatus(STATUS_KEY, undefined);
+			return;
+		}
+
 		// Force re-apply on reload because pi reloads themes from settings.json after
 		// resources_discover, which would otherwise win over our dynamic theme.
 		if (event.reason !== "startup") {
