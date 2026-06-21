@@ -7,19 +7,27 @@
 // custom settings, run the `open default settings` command
 // from the command palette or from `Zed` application menu.
 {
+  "agent_servers": {
+    "claude-acp": {
+      "default_config_options": {
+        "effort": "medium"
+      },
+      "type": "registry"
+    }
+  },
   "proxy": "",
   "cli_default_open_behavior": "existing_window",
   "session": {
     "trust_all_worktrees": true,
   },
   "theme": {
-    "mode": "dark",
+    "mode": "system",
     "light": "Twilight Light",
-    "dark": "Github Dark"
+    "dark": "Twilight"
   },
   "icon_theme": {
-    "mode": "dark",
-    "light": "JetBrains New UI Icons (Dark)",
+    "mode": "system",
+    "light": "JetBrains New UI Icons (Light)",
     "dark": "JetBrains New UI Icons (Dark)"
   },
   "vertical_scroll_margin": 6,
@@ -39,10 +47,10 @@
   // "ui_font_family": "Braun Linear",
   "ui_font_family": ".SystemUIFont",
   "title_bar": {
-    "show_branch_icon": false, // Show/hide branch icon beside branch switcher
-    "show_branch_name": false, // Show/hide branch name
-    "show_branch_status_icon": false,
-    "show_project_items": false, // Show/hide project host and name
+    "show_branch_icon": true, // Show/hide branch icon beside branch switcher
+    "show_branch_name": true, // Show/hide branch name
+    "show_branch_status_icon": true,
+    "show_project_items": true, // Show/hide project host and name
     "show_onboarding_banner": false, // Show/hide onboarding banners
     "show_user_picture": false, // Show/hide user avatar
     "show_sign_in": false, // Show/hide sign-in button
@@ -60,7 +68,8 @@
   // "buffer_font_family": "Iosevka SS08",
   // "buffer_font_family": "CommitMono",
   // "buffer_font_family": "JetBrainsMono Nerd Font Mono",
-  "buffer_font_family": "JetBrainsMono Nerd Font Mono",
+  "buffer_font_family": "Berkeley Mono",
+  "buffer_font_fallbacks": ["JetBrainsMono Nerd Font Mono"],
   "buffer_font_features": {
     "zero": 1,
   },
@@ -75,8 +84,9 @@
     "inactive_opacity": 1.0,
   },
   "terminal": {
-    "button": true,
-    "font_family": "JetBrainsMono Nerd Font Mono",
+    "button": false,
+    "font_family": "Berkeley Mono",
+    "font_fallbacks": ["JetBrainsMono Nerd Font Mono"],
     "blinking": "on",
     "default_height": 460,
     "cursor_shape": "bar",
@@ -93,7 +103,7 @@
     },
   },
   "search": {
-    "button": true,
+    "button": false,
   },
   "git": {
     "git_gutter": "tracked_files",
@@ -139,7 +149,10 @@
   },
   "outline_panel": {
     "dock": "right",
-    "button": true,
+    "button": false,
+  },
+  "agent": {
+    "dock": "right",
   },
   // Top bar
   "toolbar": {
@@ -150,7 +163,7 @@
   },
   // Status bar stuff
   "notification_panel": {
-    "button": true,
+    "button": false,
   },
   "inlay_hints": {
     "enabled": false,
@@ -162,7 +175,7 @@
   },
   "tab_bar": {
     "show_nav_history_buttons": false,
-    "show": true,
+    "show": false,
     "show_tab_bar_buttons": false,
   },
   "tabs": {
@@ -179,7 +192,7 @@
   "status_bar": {
     "active_language_button": false,
     "cursor_position_button": false,
-    "experimental.show": true,
+    "experimental.show": false,
   },
   "collaboration_panel": {
     "dock": "right",

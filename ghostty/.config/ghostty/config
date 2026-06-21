@@ -1,56 +1,46 @@
 # Ghostty config.
 # Reload with: Cmd+Shift+, in Ghostty (or restart).
 
-# Theme — GitHub Dark matched to Zed's "Github Dark" (Primer palette),
-# colors taken from ~/.config/zed/themes/github.json.
-theme = GitHub Dark
-background = #151b23
-foreground = #f0f6fc
-cursor-color = #0576ff
-cursor-text = #ffffff
-selection-background = #0f3f7b
-selection-foreground = #ffffff
-palette = 0=#2f3742
-palette = 1=#ff7b72
-palette = 2=#3fb950
-palette = 3=#d29922
-palette = 4=#58a6ff
-palette = 5=#be8fff
-palette = 6=#39c5cf
-palette = 7=#f0f6fc
-palette = 8=#656c76
-palette = 9=#ffa198
-palette = 10=#56d364
-palette = 11=#e3b341
-palette = 12=#79c0ff
-palette = 13=#d2a8ff
-palette = 14=#56d4dd
-palette = 15=#ffffff
-font-family = "JetBrainsMono Nerd Font Mono"
-font-size = 17
-adjust-cell-height = 20%
+# Theme — auto dark/light Twilight
+theme = dark:Twilight,light:Twilight Light
 
-# Opaque window with heavy blur (matches Warp).
-background-opacity = 1.0
-background-blur-radius = 40
+# Font — Berkeley Mono (licensed). JetBrainsMono Nerd Font kept as fallback for prompt/icon glyphs.
+font-family = "Berkeley Mono"
+font-family = "JetBrainsMono Nerd Font Mono"
+font-size = 18
+font-thicken = true
+adjust-cell-height = 25%
 
 # Merge title bar into the native tab row to save vertical space.
 macos-titlebar-style = tabs
 
-# Generous padding around the terminal grid (Warp leaves breathing room).
-window-padding-x = 16
-window-padding-y = 14
+# Padding around the terminal grid.
+window-padding-x = 12
+window-padding-y = 8
 window-padding-balance = true
 
-# Cursor: blinking bar like Warp.
-cursor-style = bar
+# Cursor: blinking block.
+cursor-style = block
 cursor-style-blink = true
+adjust-cursor-thickness = 3
 
 # Hide mouse while typing for a cleaner feel.
 mouse-hide-while-typing = true
 
-# Smooth scroll feel.
-scrollback-limit = 100000
+# Shell integration: prompt marks, jump-between-prompts, working-dir tracking.
+shell-integration = detect
+
+# New windows/tabs/splits open in the current pane's directory.
+window-inherit-working-directory = true
+
+# Restore window/tab/split layout after quit + reopen.
+window-save-state = always
+
+# Don't prompt to confirm when closing a tab/split/window.
+confirm-close-surface = false
+
+# Dim inactive splits to make the focused pane obvious.
+unfocused-split-opacity = 0.85
 
 # Option+Backspace deletes a word (sends ESC+DEL, which zsh binds to backward-kill-word).
 # Without this, Ghostty treats Option as a compose key and the delete doesn't fire.

@@ -1,0 +1,36 @@
+// Zed keymap
+//
+// For information on binding keys, see the Zed
+// documentation: https://zed.dev/docs/key-bindings
+//
+// To see the default key bindings run `zed: open default keymap`
+// from the command palette.
+[
+  {
+    "context": "Workspace",
+    "bindings": {
+      // "shift shift": "file_finder::Toggle"
+      "cmd-k": "pane::SplitRight",
+    },
+  },
+  {
+    "context": "Editor",
+    "bindings": {
+      "cmd-l": "editor::ToggleLineNumbers",
+      "cmd-left": "editor::MoveToBeginningOfLine",
+      "cmd-right": "editor::MoveToEndOfLine",
+      "shift-cmd-left": "editor::SelectToBeginningOfLine",
+      "shift-cmd-right": "editor::SelectToEndOfLine",
+      "cmd-backspace": "editor::DeleteToBeginningOfLine",
+      "cmd-delete": "editor::DeleteToEndOfLine",
+      "alt-backspace": "editor::DeleteToPreviousWordStart",
+      "alt-delete": "editor::DeleteToNextWordEnd",
+    },
+  },
+  {
+    "context": "Editor && vim_mode == insert",
+    "bindings": {
+      // "j k": "vim::NormalBefore"
+    },
+  },
+]

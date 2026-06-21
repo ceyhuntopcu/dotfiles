@@ -8,23 +8,10 @@
       "thinkingLevel": "high",
       "color": "accent"
     },
-    "Opus": {
-      "provider": "github-copilot",
-      "modelId": "claude-opus-4.8",
-      "thinkingLevel": "high",
-      "color": "accent"
-    },
-    "Fable": {
-      "provider": "github-copilot",
-      "modelId": "claude-fable-5",
-      "thinkingLevel": "high",
-      "color": "accent"
-    },
-    "Codex": {
-      "provider": "github-copilot",
-      "modelId": "gpt-5.5",
-      "thinkingLevel": "high",
-      "color": "accent"
+    "rush": {
+      "provider": "fireworks",
+      "modelId": "accounts/fireworks/models/glm-5p2",
+      "color": "success"
     }
   }
 }

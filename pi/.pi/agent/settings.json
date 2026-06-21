@@ -1,8 +1,8 @@
 {
-  "lastChangelogVersion": "0.79.1",
+  "lastChangelogVersion": "0.79.9",
   "theme": "twilight",
-  "defaultProvider": "github-copilot",
-  "defaultModel": "gpt-5.5",
+  "defaultProvider": "fireworks",
+  "defaultModel": "accounts/fireworks/models/glm-5p2",
   "defaultThinkingLevel": "high",
   "packages": [
     "git:github.com/nicobailon/pi-mcp-adapter"
