@@ -1,0 +1,11 @@
+// Cursor keybindings ported from Zed.
+// Note: cmd-left/right, shift-cmd-left/right, cmd-backspace, alt-backspace,
+// and alt-delete are already macOS defaults in Cursor, so they're omitted here.
+[
+  // Zed: cmd-delete -> DeleteToEndOfLine (not a default on macOS)
+  {
+    "key": "cmd+delete",
+    "command": "deleteAllRight",
+    "when": "textInputFocus && !editorReadonly"
+  }
+]

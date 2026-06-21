@@ -11,3 +11,9 @@
 
 # Logs
 *.log
+
+# Secrets / machine-local (never commit)
+settings.local.json
+*.local.json
+.env
+.env.*

@@ -11,6 +11,8 @@ ghostty/    # Ghostty config
 zed/        # Zed editor settings (settings, keymap, themes)
 pi/         # pi agent config (settings, modes, keybindings, models, extensions)
 agents/     # Shared agent skills + commands + global AGENTS.md (~/.agents; used by Pi & Claude Code)
+cursor/     # Cursor editor (settings, keybindings, Twilight theme; symlink via cursor/link.sh)
+claude/     # Claude Code (~/.claude: explorer subagent — settings stay local for secrets)
 rectangle/  # Rectangle window manager (exported config, not stowed — import via app)
 Brewfile    # Homebrew packages and casks (`brew bundle dump` output)
 ```
@@ -19,7 +21,8 @@ Brewfile    # Homebrew packages and casks (`brew bundle dump` output)
 
 ```bash
 brew bundle            # install everything in Brewfile
-stow zsh starship ghostty zed pi agents
+stow zsh starship ghostty zed pi agents claude
+./cursor/link.sh       # Cursor isn't stow-shaped (path has spaces)
 
 # Claude Code shares the same global rules — point its file at the stowed one:
 ln -sf ~/.agents/AGENTS.md ~/.claude/CLAUDE.md

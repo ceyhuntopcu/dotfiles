@@ -1,0 +1,95 @@
+{
+  // ---- Theme: auto light/dark, custom Twilight themes (match Ghostty/Zed/Pi) ----
+  "window.autoDetectColorScheme": true,
+  "workbench.preferredDarkColorTheme": "Twilight",
+  "workbench.preferredLightColorTheme": "Twilight Light",
+  "workbench.iconTheme": "vs-seti",
+
+  // ---- Fonts (kept: Berkeley Mono @ 17, JetBrainsMono Nerd Font fallback) ----
+  "editor.fontFamily": "Berkeley Mono, JetBrainsMono Nerd Font Mono",
+  "editor.fontSize": 17,
+  "editor.lineHeight": 1.6,
+  "editor.fontLigatures": "'zero'",
+  "terminal.integrated.fontFamily": "Berkeley Mono, JetBrainsMono Nerd Font Mono",
+  "terminal.integrated.cursorStyle": "line",
+  "terminal.integrated.cursorBlinking": true,
+
+  // ---- Editor behavior ----
+  "editor.lineNumbers": "on",
+  "editor.cursorSurroundingLines": 6,
+  "editor.semanticHighlighting.enabled": true,
+  "editor.formatOnPaste": true,
+  "editor.wordWrap": "on",
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.detectIndentation": false,
+  "editor.autoIndent": "full",
+  "editor.guides.indentation": false,
+  "editor.scrollbar.verticalScrollbarSize": 0,
+  "editor.scrollbar.horizontalScrollbarSize": 0,
+  "breadcrumbs.enabled": false,
+
+  // ---- Workbench ----
+  "workbench.editor.enablePreview": false,
+  "workbench.editor.enablePreviewFromQuickOpen": false,
+  "workbench.settings.openDefaultKeybindings": true,
+
+  // ---- Search / Explorer / Files ----
+  "search.useGlobalIgnoreFiles": true,
+  "search.useParentIgnoreFiles": true,
+  "explorer.confirmDelete": false,
+  "explorer.confirmDragAndDrop": false,
+  "files.watcherExclude": {
+    "**/node_modules/**": true,
+    "**/dist/**": true,
+    "**/build/**": true,
+    "**/.git/**": true
+  },
+  "files.associations": {
+    "*.go": "go"
+  },
+
+  // ---- Git / GitLens (kept) ----
+  "git.decorations.enabled": true,
+  "gitlens.currentLine.enabled": true,
+  "gitlens.currentLine.scrollable": true,
+  "gitlens.hovers.currentLine.over": "line",
+  "gitlens.codeLens.enabled": false,
+
+  // ---- Error Lens (kept) ----
+  "errorLens.enabled": true,
+  "errorLens.enabledDiagnosticLevels": ["error"],
+  "errorLens.delay": 500,
+
+  // ---- JSX (kept) ----
+  "javascript.autoClosingTags": true,
+  "typescript.autoClosingTags": true,
+
+  // ---- Cursor AI ----
+  "cursor.composer.textSizeScale": 1.15,
+  "cursor.composer.shouldChimeAfterChatFinishes": true,
+  "cursor.composer.usageSummaryDisplay": "always",
+  "cursor.composer.conversationDensity": "compact-ungrouped",
+  "cursor.general.glassShowWarningNotifications": true,
+  "cursor.general.fontSmoothingAntialiased": true,
+  "cursor.general.fontSmoothingAntialiased_v2": false,
+  "cursor.general.emailPrivacyEnabled": true,
+
+  // ---- Updates ----
+  "update.releaseTrack": "dev",
+  "update.mode": "silentlyApplyOnQuit",
+  "extensions.autoUpdate": true,
+  "extensions.autoCheckUpdates": true,
+
+  // ---- UI chrome (kept) ----
+  "workbench.statusBar.visible": false,
+  "workbench.layoutControl.enabled": false,
+  "workbench.agentsWindowButton.enabled": false,
+  "workbench.navigationControl.enabled": false,
+  "workbench.editor.editorActionsLocation": "hidden",
+  "window.commandCenter": false,
+
+  // ---- Telemetry (kept: disabled) ----
+  "telemetry.telemetryLevel": "off",
+  "workbench.activityBar.location": "hidden"
+}
