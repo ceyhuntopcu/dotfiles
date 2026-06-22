@@ -1,0 +1,21 @@
+{
+  "name": "Twilight Light",
+  "base": "light",
+  "overrides": {
+    "claude": "#9854c0",
+    "text": "#3b4261",
+    "subtle": "#8b91a8",
+    "inactive": "#b3b8c9",
+    "suggestion": "#3d6bd6",
+    "permission": "#3d6bd6",
+    "remember": "#4a9aa6",
+    "success": "#4a9aa6",
+    "error": "#c4485a",
+    "warning": "#c46a3f",
+    "merged": "#9854c0",
+    "planMode": "#3d6bd6",
+    "autoAccept": "#4a9aa6",
+    "bashBorder": "#c46a3f",
+    "promptBorder": "#cdd0db"
+  }
+}

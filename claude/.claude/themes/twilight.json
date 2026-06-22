@@ -1,0 +1,21 @@
+{
+  "name": "Twilight Dark",
+  "base": "dark",
+  "overrides": {
+    "claude": "#ca9ee6",
+    "text": "#c0caf5",
+    "subtle": "#565f89",
+    "inactive": "#414868",
+    "suggestion": "#7aa2f7",
+    "permission": "#7aa2f7",
+    "remember": "#6eb4bf",
+    "success": "#6eb4bf",
+    "error": "#f0879a",
+    "warning": "#f0ac8b",
+    "merged": "#ca9ee6",
+    "planMode": "#7aa2f7",
+    "autoAccept": "#6eb4bf",
+    "bashBorder": "#f0ac8b",
+    "promptBorder": "#414868"
+  }
+}

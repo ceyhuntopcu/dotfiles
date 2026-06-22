@@ -12,7 +12,7 @@ zed/        # Zed editor settings (settings, keymap, themes)
 pi/         # pi agent config (settings, modes, keybindings, models, extensions)
 agents/     # Shared agent skills + commands + global AGENTS.md (~/.agents; used by Pi & Claude Code)
 cursor/     # Cursor editor (settings, keybindings, Twilight theme; symlink via cursor/link.sh)
-claude/     # Claude Code (~/.claude: explorer subagent — settings stay local for secrets)
+claude/     # Claude Code (~/.claude: explorer subagent + Twilight themes — settings stay local for secrets)
 rectangle/  # Rectangle window manager (exported config, not stowed — import via app)
 Brewfile    # Homebrew packages and casks (`brew bundle dump` output)
 ```
