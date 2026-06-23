@@ -1,5 +1,5 @@
 {
-  // ---- Theme: auto light/dark, custom Twilight themes (match Ghostty/Zed/Pi) ----
+  // ---- Theme: auto light/dark + borderless (dark via preferredDark, light via preferredLight) ----
   "window.autoDetectColorScheme": true,
   "workbench.preferredLightColorTheme": "GitHub Light",
   "workbench.iconTheme": "vscode-jetbrains-icon-theme-2023-auto",
@@ -31,11 +31,32 @@
   "editor.minimap.enabled": false,
   "breadcrumbs.enabled": false,
 
-  // ---- Hide scrollbars everywhere (editor, explorer, panels) ----
+  // ---- Hide scrollbars + all separator borders (borderless, any light/dark theme) ----
   "workbench.colorCustomizations": {
     "scrollbarSlider.background": "#00000000",
     "scrollbarSlider.hoverBackground": "#00000000",
-    "scrollbarSlider.activeBackground": "#00000000"
+    "scrollbarSlider.activeBackground": "#00000000",
+    "contrastBorder": "#00000000",
+    "contrastActiveBorder": "#00000000",
+    "sideBar.border": "#00000000",
+    "sideBarSectionHeader.border": "#00000000",
+    "activityBar.border": "#00000000",
+    "editorGroup.border": "#00000000",
+    "editorGroupHeader.border": "#00000000",
+    "editorGroupHeader.tabsBorder": "#00000000",
+    "tab.border": "#00000000",
+    "tab.activeBorder": "#00000000",
+    "tab.activeBorderTop": "#00000000",
+    "panel.border": "#00000000",
+    "panelSection.border": "#00000000",
+    "statusBar.border": "#00000000",
+    "titleBar.border": "#00000000",
+    "menu.border": "#00000000",
+    "widget.border": "#00000000",
+    "editorWidget.border": "#00000000",
+    "tree.indentGuidesStroke": "#00000000",
+    "sideBySideEditor.horizontalBorder": "#00000000",
+    "sideBySideEditor.verticalBorder": "#00000000"
   },
 
   // ---- Settings Cycler: Cmd+Shift+L toggles line numbers (see keybindings.json) ----
@@ -132,10 +153,10 @@
     "https://developer.microsoft.com/json-schemas/": true,
     "https://biomejs.dev": true
   },
-  "workbench.preferredDarkColorTheme": "GitHub Dark",
   "chat.viewSessions.orientation": "stacked",
   "chat.titleBar.openInAgentsWindow.enabled": false,
   "workbench.browser.showInTitleBar": false,
   "workbench.secondarySideBar.defaultVisibility": "visible",
-  "claudeCode.preferredLocation": "sidebar"
+  "claudeCode.preferredLocation": "sidebar",
+  "workbench.preferredDarkColorTheme": "GitHub Dark"
 }
