@@ -16,6 +16,7 @@
   // ---- Editor behavior ----
   "editor.lineNumbers": "off",
   "editor.cursorSurroundingLines": 6,
+  "editor.renderLineHighlight": "none",
   "editor.semanticHighlighting.enabled": true,
   "editor.formatOnPaste": true,
   "editor.wordWrap": "on",
@@ -68,7 +69,10 @@
   "files.watcherExclude": {
     "**/node_modules/**": true,
     "**/dist/**": true,
-    "**/build/**": true
+    "**/build/**": true,
+    "**/.next/**": true,
+    "**/functions/lib/**": true,
+    "**/functions/type/**": true
   },
   "files.associations": {
     "*.go": "go"
@@ -76,6 +80,8 @@
 
   // ---- Git / GitLens (kept) ----
   "git.decorations.enabled": true,
+  "git.autofetch": true,
+  "scm.defaultViewMode": "tree",
   "gitlens.currentLine.enabled": true,
   "gitlens.currentLine.scrollable": true,
   "gitlens.hovers.currentLine.over": "line",
@@ -116,6 +122,5 @@
 
   // ---- Telemetry (kept: disabled) ----
   "telemetry.telemetryLevel": "off",
-  "workbench.activityBar.location": "hidden",
-  "workbench.preferredDarkColorTheme": "GitHub Dark Default"
+  "workbench.activityBar.location": "hidden"
 }
