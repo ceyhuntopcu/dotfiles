@@ -31,6 +31,13 @@
   "editor.minimap.enabled": false,
   "breadcrumbs.enabled": false,
 
+  // ---- Hide scrollbars everywhere (editor, explorer, panels) ----
+  "workbench.colorCustomizations": {
+    "scrollbarSlider.background": "#00000000",
+    "scrollbarSlider.hoverBackground": "#00000000",
+    "scrollbarSlider.activeBackground": "#00000000"
+  },
+
   // ---- Settings Cycler: Cmd+Shift+L toggles line numbers (see keybindings.json) ----
   "settings.cycle": [
     {
@@ -97,16 +104,6 @@
   "javascript.autoClosingTags": true,
   "typescript.autoClosingTags": true,
 
-  // ---- Cursor AI ----
-  "cursor.composer.textSizeScale": 1.15,
-  "cursor.composer.shouldChimeAfterChatFinishes": true,
-  "cursor.composer.usageSummaryDisplay": "always",
-  "cursor.composer.conversationDensity": "compact-ungrouped",
-  "cursor.general.glassShowWarningNotifications": true,
-  "cursor.general.fontSmoothingAntialiased": true,
-  "cursor.general.fontSmoothingAntialiased_v2": false,
-  "cursor.general.emailPrivacyEnabled": true,
-
   // ---- Updates ----
   "update.releaseTrack": "stable",
   "update.mode": "silentlyApplyOnQuit",
@@ -135,5 +132,9 @@
     "https://biomejs.dev": true
   },
   "workbench.preferredDarkColorTheme": "Github Dark Tritanopia",
-  "chat.viewSessions.orientation": "stacked"
+  "chat.viewSessions.orientation": "stacked",
+  "chat.titleBar.openInAgentsWindow.enabled": false,
+  "workbench.browser.showInTitleBar": false,
+  "workbench.secondarySideBar.defaultVisibility": "visible",
+  "claudeCode.preferredLocation": "sidebar"
 }

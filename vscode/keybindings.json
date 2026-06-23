@@ -1,6 +1,6 @@
-// Cursor keybindings ported from Zed.
+// VS Code keybindings (ported from Zed).
 // Note: cmd-left/right, shift-cmd-left/right, cmd-backspace, alt-backspace,
-// and alt-delete are already macOS defaults in Cursor, so they're omitted here.
+// and alt-delete are already macOS defaults in VS Code, so they're omitted here.
 [
   // Zed: cmd-delete -> DeleteToEndOfLine (not a default on macOS)
   {
@@ -22,5 +22,10 @@
   {
     "key": "cmd+shift+s",
     "command": "workbench.action.splitEditor"
+  },
+  // Toggle Claude Code chat (lives in the right/secondary sidebar; overrides Open New External Terminal)
+  {
+    "key": "cmd+shift+c",
+    "command": "workbench.action.toggleAuxiliaryBar"
   }
 ]
