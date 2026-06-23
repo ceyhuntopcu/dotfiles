@@ -23,7 +23,7 @@
     "key": "cmd+shift+s",
     "command": "workbench.action.splitEditor"
   },
-  // Toggle Claude Code chat (lives in the right/secondary sidebar; overrides Open New External Terminal)
+  // Toggle Claude Code chat (right/secondary sidebar; overrides Open New External Terminal)
   {
     "key": "cmd+shift+c",
     "command": "workbench.action.toggleAuxiliaryBar"
