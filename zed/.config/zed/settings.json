@@ -175,7 +175,7 @@
   },
   "tab_bar": {
     "show_nav_history_buttons": false,
-    "show": false,
+    "show": true,
     "show_tab_bar_buttons": false,
   },
   "tabs": {
@@ -219,4 +219,25 @@
     "button": false,
   },
   "semantic_tokens": "combined",
+  // Format on save with Biome (matches project biome.json + pnpm format)
+  "format_on_save": "on",
+  "languages": {
+    "TypeScript": {
+      "formatter": { "language_server": { "name": "biome" } },
+      "code_actions_on_format": { "source.fixAll.biome": true },
+    },
+    "TSX": {
+      "formatter": { "language_server": { "name": "biome" } },
+      "code_actions_on_format": { "source.fixAll.biome": true },
+    },
+    "JavaScript": {
+      "formatter": { "language_server": { "name": "biome" } },
+    },
+    "JSON": {
+      "formatter": { "language_server": { "name": "biome" } },
+    },
+    "JSONC": {
+      "formatter": { "language_server": { "name": "biome" } },
+    },
+  },
 }

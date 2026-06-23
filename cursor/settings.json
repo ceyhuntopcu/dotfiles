@@ -1,7 +1,7 @@
 {
   // ---- Theme: auto light/dark, custom Twilight themes (match Ghostty/Zed/Pi) ----
   "window.autoDetectColorScheme": true,
-  "workbench.preferredDarkColorTheme": "Twilight",
+  "workbench.preferredDarkColorTheme": "GitHub Dark Default",
   "workbench.preferredLightColorTheme": "Twilight Light",
   "workbench.iconTheme": "vs-seti",
 
@@ -28,6 +28,20 @@
   "editor.scrollbar.verticalScrollbarSize": 0,
   "editor.scrollbar.horizontalScrollbarSize": 0,
   "breadcrumbs.enabled": false,
+
+  // ---- Format on save (Biome — matches project biome.json + pnpm format) ----
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "biomejs.biome",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.biome": "explicit",
+    "source.organizeImports.biome": "never"
+  },
+  "[typescript]": { "editor.defaultFormatter": "biomejs.biome" },
+  "[typescriptreact]": { "editor.defaultFormatter": "biomejs.biome" },
+  "[javascript]": { "editor.defaultFormatter": "biomejs.biome" },
+  "[javascriptreact]": { "editor.defaultFormatter": "biomejs.biome" },
+  "[json]": { "editor.defaultFormatter": "biomejs.biome" },
+  "[jsonc]": { "editor.defaultFormatter": "biomejs.biome" },
 
   // ---- Workbench ----
   "workbench.editor.enablePreview": false,
