@@ -154,9 +154,9 @@
     "https://biomejs.dev": true
   },
   "chat.viewSessions.orientation": "stacked",
-  "chat.titleBar.openInAgentsWindow.enabled": false,
   "workbench.browser.showInTitleBar": false,
   "workbench.secondarySideBar.defaultVisibility": "visible",
   "claudeCode.preferredLocation": "sidebar",
-  "workbench.preferredDarkColorTheme": "GitHub Dark"
+  "workbench.preferredDarkColorTheme": "GitHub Dark",
+  "chat.titleBar.openInAgentsWindow.enabled": false
 }

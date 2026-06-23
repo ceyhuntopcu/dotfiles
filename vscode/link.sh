@@ -11,14 +11,14 @@ SRC="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DEST="$HOME/Library/Application Support/Code/User"
 
 if [ "${1:-}" = "-D" ]; then
-  for f in settings.json keybindings.json; do
+  for f in settings.json keybindings.json chatLanguageModels.json; do
     [ -L "$DEST/$f" ] && rm "$DEST/$f" && echo "unlinked $DEST/$f"
   done
   exit 0
 fi
 
 mkdir -p "$DEST"
-for f in settings.json keybindings.json; do
+for f in settings.json keybindings.json chatLanguageModels.json; do
   if [ -e "$DEST/$f" ] && [ ! -L "$DEST/$f" ]; then
     mv "$DEST/$f" "$DEST/$f.bak"
     echo "backed up existing $f -> $f.bak"

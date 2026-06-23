@@ -23,9 +23,26 @@
     "key": "cmd+shift+s",
     "command": "workbench.action.splitEditor"
   },
-  // Toggle Claude Code chat (right/secondary sidebar; overrides Open New External Terminal)
+  // Cmd+Shift+C — Claude Code: open when the right panel is hidden, close the panel when it's open
   {
     "key": "cmd+shift+c",
-    "command": "workbench.action.toggleAuxiliaryBar"
+    "command": "claude-vscode.sidebar.open",
+    "when": "!auxiliaryBarVisible"
+  },
+  {
+    "key": "cmd+shift+c",
+    "command": "workbench.action.toggleAuxiliaryBar",
+    "when": "auxiliaryBarVisible"
+  },
+  // Cmd+Shift+I — VS Code Chat (Copilot): same open-when-hidden / close-when-open toggle
+  {
+    "key": "cmd+shift+i",
+    "command": "workbench.action.chat.open",
+    "when": "!auxiliaryBarVisible"
+  },
+  {
+    "key": "cmd+shift+i",
+    "command": "workbench.action.toggleAuxiliaryBar",
+    "when": "auxiliaryBarVisible"
   }
 ]
