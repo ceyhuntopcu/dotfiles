@@ -28,6 +28,7 @@
   "editor.scrollbar.verticalScrollbarSize": 0,
   "editor.scrollbar.horizontalScrollbarSize": 0,
   "editor.stickyScroll.enabled": false,
+  "editor.minimap.enabled": false,
   "breadcrumbs.enabled": false,
 
   // ---- Settings Cycler: Cmd+Shift+L toggles line numbers (see keybindings.json) ----
@@ -109,7 +110,7 @@
   // ---- Updates ----
   "update.releaseTrack": "stable",
   "update.mode": "silentlyApplyOnQuit",
-  "extensions.autoUpdate": true,
+  "extensions.autoUpdate": "on",
   "extensions.autoCheckUpdates": true,
 
   // ---- UI chrome (kept) ----
@@ -122,5 +123,17 @@
 
   // ---- Telemetry (kept: disabled) ----
   "telemetry.telemetryLevel": "off",
-  "workbench.activityBar.location": "hidden"
+  "workbench.activityBar.location": "hidden",
+  "json.schemaDownload.trustedDomains": {
+    "https://schemastore.azurewebsites.net/": true,
+    "https://raw.githubusercontent.com/microsoft/vscode/": true,
+    "https://raw.githubusercontent.com/devcontainers/spec/": true,
+    "https://www.schemastore.org/": true,
+    "https://json.schemastore.org/": true,
+    "https://json-schema.org/": true,
+    "https://developer.microsoft.com/json-schemas/": true,
+    "https://biomejs.dev": true
+  },
+  "workbench.preferredDarkColorTheme": "Github Dark Tritanopia",
+  "chat.viewSessions.orientation": "stacked"
 }
