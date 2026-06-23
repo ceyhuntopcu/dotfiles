@@ -7,5 +7,20 @@
     "key": "cmd+delete",
     "command": "deleteAllRight",
     "when": "textInputFocus && !editorReadonly"
+  },
+  // Toggle line numbers off/on (Settings Cycler; overrides select-all-occurrences)
+  {
+    "key": "cmd+shift+l",
+    "command": "settings.cycle.lineNumbers"
+  },
+  // Open Source Control panel (mirrors default Ctrl+Shift+G; overrides Find Previous)
+  {
+    "key": "cmd+shift+g",
+    "command": "workbench.view.scm"
+  },
+  // Split editor side-by-side (default Cmd+\ is unpressable on Canadian layout; overrides Save As)
+  {
+    "key": "cmd+shift+s",
+    "command": "workbench.action.splitEditor"
   }
 ]

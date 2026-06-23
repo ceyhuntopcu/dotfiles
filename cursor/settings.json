@@ -1,9 +1,8 @@
 {
   // ---- Theme: auto light/dark, custom Twilight themes (match Ghostty/Zed/Pi) ----
   "window.autoDetectColorScheme": true,
-  "workbench.preferredDarkColorTheme": "GitHub Dark Default",
-  "workbench.preferredLightColorTheme": "Twilight Light",
-  "workbench.iconTheme": "vs-seti",
+  "workbench.preferredLightColorTheme": "GitHub Light Default",
+  "workbench.iconTheme": "vscode-jetbrains-icon-theme-2023-auto",
 
   // ---- Fonts (kept: Berkeley Mono @ 17, JetBrainsMono Nerd Font fallback) ----
   "editor.fontFamily": "Berkeley Mono, JetBrainsMono Nerd Font Mono",
@@ -15,7 +14,7 @@
   "terminal.integrated.cursorBlinking": true,
 
   // ---- Editor behavior ----
-  "editor.lineNumbers": "on",
+  "editor.lineNumbers": "off",
   "editor.cursorSurroundingLines": 6,
   "editor.semanticHighlighting.enabled": true,
   "editor.formatOnPaste": true,
@@ -27,7 +26,20 @@
   "editor.guides.indentation": false,
   "editor.scrollbar.verticalScrollbarSize": 0,
   "editor.scrollbar.horizontalScrollbarSize": 0,
+  "editor.stickyScroll.enabled": false,
   "breadcrumbs.enabled": false,
+
+  // ---- Settings Cycler: Cmd+Shift+L toggles line numbers (see keybindings.json) ----
+  "settings.cycle": [
+    {
+      "id": "lineNumbers",
+      "overrideWorkspaceSettings": false,
+      "values": [
+        { "editor.lineNumbers": "off" },
+        { "editor.lineNumbers": "on" }
+      ]
+    }
+  ],
 
   // ---- Format on save (Biome — matches project biome.json + pnpm format) ----
   "editor.formatOnSave": true,
@@ -56,8 +68,7 @@
   "files.watcherExclude": {
     "**/node_modules/**": true,
     "**/dist/**": true,
-    "**/build/**": true,
-    "**/.git/**": true
+    "**/build/**": true
   },
   "files.associations": {
     "*.go": "go"
@@ -90,7 +101,7 @@
   "cursor.general.emailPrivacyEnabled": true,
 
   // ---- Updates ----
-  "update.releaseTrack": "dev",
+  "update.releaseTrack": "stable",
   "update.mode": "silentlyApplyOnQuit",
   "extensions.autoUpdate": true,
   "extensions.autoCheckUpdates": true,
@@ -105,5 +116,6 @@
 
   // ---- Telemetry (kept: disabled) ----
   "telemetry.telemetryLevel": "off",
-  "workbench.activityBar.location": "hidden"
+  "workbench.activityBar.location": "hidden",
+  "workbench.preferredDarkColorTheme": "GitHub Dark Default"
 }
