@@ -1,7 +1,7 @@
 {
   // ---- Theme: auto light/dark + borderless (dark via preferredDark, light via preferredLight) ----
   "window.autoDetectColorScheme": true,
-  "workbench.preferredLightColorTheme": "GitHub Light",
+  "workbench.preferredLightColorTheme": "Twilight Light",
   "workbench.iconTheme": "vscode-jetbrains-icon-theme-2023-auto",
 
   // ---- Fonts (kept: Berkeley Mono @ 17, JetBrainsMono Nerd Font fallback) ----
@@ -157,6 +157,6 @@
   "workbench.browser.showInTitleBar": false,
   "workbench.secondarySideBar.defaultVisibility": "visible",
   "claudeCode.preferredLocation": "sidebar",
-  "workbench.preferredDarkColorTheme": "GitHub Dark",
+  "workbench.preferredDarkColorTheme": "Twilight",
   "chat.titleBar.openInAgentsWindow.enabled": false
 }
