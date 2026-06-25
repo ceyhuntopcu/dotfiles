@@ -71,3 +71,6 @@ alias pi='mise exec node@lts -- pi'
 eval "$(atuin init zsh)"
 
 if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init zsh)"; fi
+
+# opencode
+export PATH=/Users/ceyhuntopcu/.opencode/bin:$PATH

@@ -1,0 +1,58 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+
+  // Never use OpenCode-hosted models.
+  "disabled_providers": ["opencode"],
+
+  // Reuse the Claude Code login (Team plan) for Anthropic models — no separate API key.
+  // opencode-claude-auth reads Claude Code's stored OAuth token (org-sanctioned; coworker uses it).
+  "plugin": ["opencode-claude-auth@latest"],
+
+  // Default = Claude Opus 4.8 via the Claude Code subscription. Cheap background tasks stay on Kimi.
+  "model": "anthropic/claude-opus-4-8",
+  "small_model": "fireworks-ai/accounts/fireworks/models/kimi-k2p7-code",
+
+  // Start every session in PLAN mode (read-only-ish: edits/bash ask first).
+  "default_agent": "plan",
+
+  // Kimi 2.7 Code via Fireworks (OpenAI-compatible). Key added via `opencode auth login` -> Fireworks.
+  "provider": {
+    "fireworks-ai": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Fireworks AI",
+      "options": { "baseURL": "https://api.fireworks.ai/inference/v1" },
+      "models": {
+        "accounts/fireworks/models/kimi-k2p7-code": { "name": "Kimi 2.7 Code" }
+      }
+    }
+  },
+
+  "agent": {
+    // Main build mode — Claude Opus 4.8 with 1M context (Team plan via Claude Code login).
+    "build": {
+      "description": "Build / make changes on Claude Opus 4.8.",
+      "mode": "primary",
+      "model": "anthropic/claude-opus-4-8",
+      "enable1mContext": true
+    },
+    // Cheap read-only codebase search on Kimi (keeps the main agent's context clean).
+    "explore": {
+      "description": "Read-only codebase search & mapping. Specify thoroughness: 'quick', 'medium', or 'very thorough'. Returns a summary so the main agent's context stays focused. Can run several in parallel.",
+      "mode": "subagent",
+      "model": "fireworks-ai/accounts/fireworks/models/kimi-k2p7-code",
+      "permission": { "edit": "deny", "bash": "deny" }
+    },
+    // Read-only second opinion for review/debugging/architecture (never edits).
+    "oracle": {
+      "description": "Read-only reasoning oracle for code review, debugging, and architecture. Pass the full context (what changed, why, the diff); it analyzes and returns findings, never edits. Invoke once per task.",
+      "mode": "subagent",
+      "model": "fireworks-ai/accounts/fireworks/models/kimi-k2p7-code",
+      "permission": { "edit": "deny" }
+    }
+  },
+
+  "mcp": {
+    "context7": { "type": "remote", "url": "https://mcp.context7.com/mcp" },
+    "playwright": { "type": "local", "command": ["npx", "@playwright/mcp@latest"], "enabled": true }
+  }
+}
