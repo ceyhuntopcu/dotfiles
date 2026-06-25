@@ -1,8 +1,8 @@
 {
   "lastChangelogVersion": "0.79.10",
   "theme": "twilight_light",
-  "defaultProvider": "fireworks",
-  "defaultModel": "accounts/fireworks/models/glm-5p2",
+  "defaultProvider": "anthropic",
+  "defaultModel": "claude-opus-4-8",
   "defaultThinkingLevel": "high",
   "packages": [
     "git:github.com/nicobailon/pi-mcp-adapter"
