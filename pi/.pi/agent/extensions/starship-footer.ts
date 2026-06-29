@@ -126,11 +126,7 @@ function formatMoney(value: number): string {
 }
 
 function formatDirectory(cwd: string): string {
-	const home = os.homedir();
-	const normalized = cwd.startsWith(home) ? `~${cwd.slice(home.length)}` : cwd;
-	const parts = normalized.split(path.sep).filter(Boolean);
-	if (normalized === "~" || parts.length <= 4) return normalized;
-	return `${normalized.startsWith("~") ? "~" : ""}/…/${parts.slice(-3).join("/")}`;
+	return path.basename(cwd) || cwd;
 }
 
 function parsePorcelain(output: string, fallbackBranch?: string): GitInfo {
@@ -294,8 +290,7 @@ export default function (pi: ExtensionAPI) {
 		const theme = ctx.ui.theme;
 		const directory = theme.fg("accent", formatDirectory(ctx.cwd));
 		const branch = git.inside && git.branch ? ` ${theme.fg("dim", "on")} ${theme.fg("thinkingHigh", ` ${git.branch}`)}` : "";
-		const gitStatus = renderGitStatus(git, theme);
-		const left = `${directory}${branch}${gitStatus}`;
+		const left = `${directory}${branch}`;
 
 		const usage = getUsage(ctx);
 		const model = ctx.model ? ctx.model.id : "no model";
@@ -340,6 +335,7 @@ export default function (pi: ExtensionAPI) {
 			sessionName ? theme.fg("muted", sessionName) : undefined,
 			modeBadge,
 			theme.fg("dim", modelLabel),
+			ctx.model?.reasoning ? theme.fg("muted", thinking || "off") : undefined,
 			vimModeStr,
 			usage.tokens ? theme.fg("muted", `${formatNumber(usage.tokens)} ctx`) : undefined,
 			theme.fg("muted", formatMoney(usage.cost)),

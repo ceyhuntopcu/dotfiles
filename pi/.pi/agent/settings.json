@@ -1,11 +1,11 @@
 {
-  "lastChangelogVersion": "0.79.10",
+  "lastChangelogVersion": "0.80.2",
   "theme": "twilight_light",
-  "defaultProvider": "anthropic",
-  "defaultModel": "claude-opus-4-8",
+  "defaultProvider": "fireworks",
+  "defaultModel": "accounts/fireworks/models/kimi-k2p7-code",
   "defaultThinkingLevel": "high",
   "packages": [
-    "git:github.com/nicobailon/pi-mcp-adapter"
+    "npm:@mjakl/pi-subagent"
   ],
   "editorPaddingX": 0,
   "quietStartup": true,
@@ -13,5 +13,6 @@
   "enableInstallTelemetry": false,
   "compaction": {
     "enabled": true
-  }
+  },
+  "hideThinkingBlock": false
 }
