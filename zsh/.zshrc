@@ -64,9 +64,6 @@ eval "$(zoxide init zsh)"
 # mise (runtime version manager — reads .nvmrc / .tool-versions / mise.toml)
 eval "$(mise activate zsh)"
 
-# pi needs Node >= 22.19 — run it under mise's global LTS regardless of cwd
-alias pi='mise exec node@lts -- pi'
-
 # atuin (searchable synced shell history — owns Ctrl+R; must init after fzf)
 eval "$(atuin init zsh)"
 
