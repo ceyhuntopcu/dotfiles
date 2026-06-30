@@ -1,0 +1,12 @@
+# pi runtime state & secrets — never commit.
+# Because ~/.pi is a stow tree-folded symlink into this repo, pi writes its
+# runtime files here; keep them out of version control.
+# auth.json holds the Fireworks API key + Claude OAuth token — must stay ignored.
+# agents/ holds subagent role definitions (config) — tracked on purpose.
+auth.json
+trust.json
+sessions/
+npm/
+git/
+mcp-cache.json
+mcp-npx-cache.json

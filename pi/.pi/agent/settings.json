@@ -5,7 +5,8 @@
   "defaultModel": "accounts/fireworks/models/kimi-k2p7-code",
   "defaultThinkingLevel": "high",
   "packages": [
-    "npm:@mjakl/pi-subagent"
+    "npm:@mjakl/pi-subagent",
+    "git:github.com/nicobailon/pi-mcp-adapter"
   ],
   "editorPaddingX": 0,
   "quietStartup": true,

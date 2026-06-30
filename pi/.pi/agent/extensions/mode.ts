@@ -1168,7 +1168,7 @@ function setEditor(pi: ExtensionAPI, ctx: ExtensionContext, history: PromptEntry
         editor.modeLabelProvider = () => runtime.currentMode;
         // Keep the mode label color stable (match footer/status bar).
         editor.modeLabelColor = (text: string) =>
-            uiTheme.fg("accent", uiTheme.bold(text));
+            getModeBorderColor(uiTheme, pi, runtime.currentMode)(uiTheme.bold(text));
         const borderColor = (text: string) => {
             const isBashMode = editor.getText().trimStart().startsWith("!");
             if (isBashMode) {
