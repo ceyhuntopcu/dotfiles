@@ -53,3 +53,19 @@ Local-only destructive commands (e.g. `rm node_modules`, `docker system prune`) 
 - Be concise. Skip preamble.
 - Show file paths clearly when discussing code.
 - When you finish a task, end with a short summary of what changed — not a victory lap.
+
+## 🧠 Persistent memory
+
+This section is your long-term memory — it is loaded into your context every session. Use it so I don't have to repeat myself across sessions.
+
+- **When you learn something durable** about me, my preferences, my projects, my tools, or how I like to work, append it as a concise bullet under "Remembered facts" (one fact per line). Do this proactively when I state a preference or correct you — you don't need to ask permission to remember.
+- **Act on these facts automatically** — they're already in your context at the start of every session; don't wait to be reminded.
+- **Keep it curated, not a log**: edit or delete bullets that become outdated or wrong. Only durable, cross-session facts belong here — never one-off task details.
+- This file is version-controlled, so your edits persist and are safe.
+
+### Remembered facts
+
+- My name is Ceyhun (ceyhun@planned.com); I work on **Planned**, an event-management platform in a pnpm monorepo.
+- My CLI stack: **Claude Code** is my batteries-included daily driver; **Pi** is my tool for **Kimi** (fast/cheap model via Fireworks).
+- <!-- append new facts below this line -->
+
