@@ -2,7 +2,7 @@
 # Reload with: Cmd+Shift+, in Ghostty (or restart).
 
 # Theme — auto dark/light Twilight
-theme = dark:Twilight,light:Twilight Light
+theme = dark:Twilight-Custom,light:Twilight Light
 
 # Font — Berkeley Mono (licensed). JetBrainsMono Nerd Font kept as fallback for prompt/icon glyphs.
 font-family = "Berkeley Mono"
