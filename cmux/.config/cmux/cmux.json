@@ -19,7 +19,9 @@
     "bindings": {
       "newTab": "cmd+t",
       "newSurface": "cmd+n",
-      "newBrowserWorkspace": "cmd+shift+b"
+      "newBrowserWorkspace": "cmd+shift+b",
+      "openDiffViewer": "cmd+shift+d",
+      "toggleFileExplorer": "cmd+shift+e"
     }
   },
 
