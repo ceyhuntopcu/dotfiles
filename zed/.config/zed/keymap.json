@@ -11,6 +11,7 @@
     "bindings": {
       // "shift shift": "file_finder::Toggle"
       "cmd-k": "pane::SplitRight",
+      "cmd-shift-g": "git_panel::ToggleFocus",
     },
   },
   {
