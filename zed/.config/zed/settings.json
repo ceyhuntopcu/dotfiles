@@ -30,6 +30,12 @@
     "light": "JetBrains New UI Icons (Light)",
     "dark": "JetBrains New UI Icons (Dark)"
   },
+  // Borderless look (matches the vscode workbench.colorCustomizations setup):
+  // hide the panel/tab/sidebar divider lines by making them transparent.
+  "experimental.theme_overrides": {
+    "border": "#00000000",
+    "border.variant": "#00000000"
+  },
   "vertical_scroll_margin": 6,
   "diff_view_style": "split",
   "use_system_window_tabs": true,
