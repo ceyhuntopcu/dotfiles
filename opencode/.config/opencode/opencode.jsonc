@@ -1,0 +1,39 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+
+  // Never use OpenCode-hosted models.
+  "disabled_providers": ["opencode"],
+
+  // Reuse the Claude Code login (Team plan) for Anthropic models — no separate API key.
+  // opencode-claude-auth reads Claude Code's stored OAuth token (org-sanctioned; coworker uses it).
+  "plugin": [
+    "opencode-claude-auth@latest",
+    "oh-my-openagent@latest"
+  ],
+
+  // Default = Claude Opus 4.8 via the Claude Code subscription. Cheap background tasks stay on Kimi.
+  "model": "anthropic/claude-opus-4-8",
+  "small_model": "fireworks-ai/accounts/fireworks/models/kimi-k2p7-code",
+
+  // Start every session in PLAN mode (read-only-ish: edits/bash ask first).
+  "default_agent": "plan",
+
+  // Kimi 2.7 Code via Fireworks (OpenAI-compatible). Key added via `opencode auth login` -> Fireworks.
+  "provider": {
+    "fireworks-ai": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Fireworks AI",
+      "options": { "baseURL": "https://api.fireworks.ai/inference/v1" },
+      "models": {
+        "accounts/fireworks/models/kimi-k2p7-code": { "name": "Kimi 2.7 Code" },
+        "accounts/fireworks/models/deepseek-v4-pro": { "name": "DeepSeek V4 Pro" },
+        "accounts/fireworks/models/glm-5p2": { "name": "GLM 5.2" }
+      }
+    }
+  },
+
+  "mcp": {
+    "context7": { "type": "remote", "url": "https://mcp.context7.com/mcp" },
+    "playwright": { "type": "local", "command": ["npx", "@playwright/mcp@latest"], "enabled": true }
+  }
+}
