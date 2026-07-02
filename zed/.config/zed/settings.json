@@ -22,8 +22,8 @@
   },
   "theme": {
     "mode": "system",
-    "light": "Twilight Light",
-    "dark": "Twilight"
+    "light": "Vercel Light",
+    "dark": "Vercel Dark"
   },
   "icon_theme": {
     "mode": "system",

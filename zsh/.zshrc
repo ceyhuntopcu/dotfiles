@@ -67,6 +67,8 @@ eval "$(mise activate zsh)"
 # pi needs Node >= 22.19 — run it under mise's global LTS regardless of cwd
 alias pi='mise exec node@lts -- pi'
 
+alias oc='opencode'
+
 # atuin (searchable synced shell history — owns Ctrl+R; must init after fzf)
 eval "$(atuin init zsh)"
 

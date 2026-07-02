@@ -1,6 +1,6 @@
 {
   "$schema": "https://opencode.ai/tui.json",
-  "theme": "twilight",
+  "theme": "vercel",
   "prompt": {
     "max_height": 4
   },
