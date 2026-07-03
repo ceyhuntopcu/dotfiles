@@ -15,8 +15,8 @@
   "model": "anthropic/claude-opus-4-8",
   "small_model": "fireworks-ai/accounts/fireworks/models/kimi-k2p7-code",
 
-  // Start every session in PLAN mode (read-only-ish: edits/bash ask first).
-  "default_agent": "plan",
+  // Start every session in Prometheus (oh-my-openagent's planner) — you always plan before executing.
+  "default_agent": "prometheus",
 
   // Kimi 2.7 Code via Fireworks (OpenAI-compatible). Key added via `opencode auth login` -> Fireworks.
   "provider": {
@@ -34,6 +34,15 @@
 
   "mcp": {
     "context7": { "type": "remote", "url": "https://mcp.context7.com/mcp" },
-    "playwright": { "type": "local", "command": ["npx", "@playwright/mcp@latest"], "enabled": true }
+    "playwright": { "type": "local", "command": ["npx", "@playwright/mcp@latest"], "enabled": true },
+    // OAuth handled automatically by OpenCode on first use (same as context7).
+    "linear": { "type": "remote", "url": "https://mcp.linear.app/mcp" },
+    // PAT-based auth (env var, not a secret in this file) — see README for setup.
+    "github": {
+      "type": "remote",
+      "url": "https://api.githubcopilot.com/mcp/",
+      "oauth": false,
+      "headers": { "Authorization": "Bearer {env:GITHUB_PERSONAL_ACCESS_TOKEN}" }
+    }
   }
 }
