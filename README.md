@@ -11,6 +11,7 @@ ghostty/    # Ghostty config
 cmux/       # cmux terminal config (inherits Ghostty config; minimalist + custom shortcuts)
 zed/        # Zed editor settings (settings, keymap, themes)
 pi/         # pi agent config (settings, modes, keybindings, models, extensions)
+opencode/   # OpenCode config (oh-my-openagent roster, MCP servers, theme)
 agents/     # Shared agent skills + commands + global AGENTS.md (~/.agents; used by Pi & Claude Code)
 vscode/     # VS Code editor (settings, keybindings, Twilight theme; symlink via vscode/link.sh)
 claude/     # Claude Code (~/.claude: explorer subagent + Twilight themes — settings stay local for secrets)
@@ -22,7 +23,7 @@ Brewfile    # Homebrew packages and casks (`brew bundle dump` output)
 
 ```bash
 brew bundle            # install everything in Brewfile
-stow zsh starship ghostty cmux zed pi agents claude
+stow zsh starship ghostty cmux zed pi opencode agents claude
 ./vscode/link.sh       # VS Code isn't stow-shaped (path has spaces)
 
 # Claude Code shares the same global rules — point its file at the stowed one:
