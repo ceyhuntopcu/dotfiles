@@ -18,6 +18,20 @@
     "vercel": {
       "command": "npx",
       "args": ["-y", "mcp-remote", "https://mcp.vercel.com"]
+    },
+    "github": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "https://api.githubcopilot.com/mcp/",
+        "--header",
+        "Authorization: Bearer ${GITHUB_PERSONAL_ACCESS_TOKEN}"
+      ]
+    },
+    "chrome-devtools": {
+      "command": "npx",
+      "args": ["-y", "chrome-devtools-mcp@latest"]
     }
   }
 }

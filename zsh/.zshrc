@@ -68,6 +68,7 @@ eval "$(mise activate zsh)"
 alias pi='mise exec node@lts -- pi'
 
 alias oc='opencode'
+alias cc='claude'
 
 # OpenCode's GitHub MCP — reuse gh CLI's stored token (no separate PAT needed)
 if command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1; then

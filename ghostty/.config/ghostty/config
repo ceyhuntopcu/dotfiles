@@ -1,13 +1,13 @@
 # Ghostty config.
 # Reload with: Cmd+Shift+, in Ghostty (or restart).
 
-# Theme — auto dark/light Vercel
-theme = dark:Vercel,light:Vercel Light
+# Theme — OneDark Pro (ported from @lamiphil's kitty/ghostty config) / Atom One Light
+theme = dark:OneDark-Pro-Custom,light:Atom One Light
 
 # Font — Berkeley Mono (licensed). JetBrainsMono Nerd Font kept as fallback for prompt/icon glyphs.
 font-family = "Berkeley Mono"
 font-family = "JetBrainsMono Nerd Font Mono"
-font-size = 18
+font-size = 15
 font-thicken = false
 adjust-cell-height = 25%
 

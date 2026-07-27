@@ -26,11 +26,13 @@ type ModeSpec = {
 type ModesFile = {
     version: 1;
     currentMode: ModeName;
+    /** Optional mode to force on every session_start (overrides session model restore). */
+    startupMode?: ModeName;
     modes: Record<ModeName, ModeSpec>;
 };
 
-// Only "default" is a forced/built-in mode. Others are just initial suggestions and can be renamed/deleted.
-const DEFAULT_MODE_ORDER = ["default"] as const;
+// Only "low" is a forced/built-in mode. Others are just initial suggestions and can be renamed/deleted.
+const DEFAULT_MODE_ORDER = ["low"] as const;
 const CUSTOM_MODE_NAME = "custom" as const;
 
 function expandUserPath(p: string): string {
@@ -273,10 +275,10 @@ function createDefaultModes(ctx: ExtensionContext, pi: ExtensionAPI): ModesFile 
 
     return {
         version: 1,
-        currentMode: "default",
+        currentMode: "low",
         modes: {
             // Forced default mode
-            default: { ...base },
+            low: { ...base },
             // Convenience mode (user can delete/rename)
             fast: { ...base, thinkingLevel: "off" },
         },
@@ -298,7 +300,7 @@ function ensureDefaultModeEntries(file: ModesFile, ctx: ExtensionContext, pi: Ex
 
     if (!file.currentMode || !(file.currentMode in file.modes) || file.currentMode === CUSTOM_MODE_NAME) {
         const first = Object.keys(file.modes).find((k) => k !== CUSTOM_MODE_NAME);
-        file.currentMode = file.modes.default ? "default" : first || "default";
+        file.currentMode = file.modes.low ? "low" : first || "low";
     }
 }
 
@@ -306,7 +308,8 @@ async function loadModesFile(filePath: string, ctx: ExtensionContext, pi: Extens
     try {
         const raw = await fs.readFile(filePath, "utf8");
         const parsed = JSON.parse(raw) as Record<string, unknown>;
-        const currentMode = typeof parsed.currentMode === "string" ? parsed.currentMode : "default";
+        const currentMode = typeof parsed.currentMode === "string" ? parsed.currentMode : "low";
+        const startupMode = typeof parsed.startupMode === "string" ? (parsed.startupMode as ModeName) : undefined;
         const modesRaw = parsed.modes && typeof parsed.modes === "object" ? (parsed.modes as Record<string, unknown>) : {};
         const modes: Record<string, ModeSpec> = {};
         for (const [k, v] of Object.entries(modesRaw)) {
@@ -315,6 +318,7 @@ async function loadModesFile(filePath: string, ctx: ExtensionContext, pi: Extens
         const file: ModesFile = {
             version: 1,
             currentMode,
+            startupMode,
             modes,
         };
         ensureDefaultModeEntries(file, ctx, pi);
@@ -1286,6 +1290,17 @@ export default function (pi: ExtensionAPI) {
         lastObservedModel = { provider: ctx.model?.provider, modelId: ctx.model?.id };
         await ensureRuntime(pi, ctx);
         customOverlay = null;
+
+        // If a startupMode is configured, force it on every open. This overrides
+        // pi's default behavior of restoring the last-used model from the existing
+        // session, so the user always starts in their chosen default mode.
+        const startupMode = runtime.data.startupMode;
+        if (startupMode && startupMode !== CUSTOM_MODE_NAME && runtime.data.modes[startupMode]) {
+            await applyMode(pi, ctx, startupMode);
+            lastObservedModel = { provider: ctx.model?.provider, modelId: ctx.model?.id };
+            applyEditor(pi, ctx);
+            return;
+        }
 
         const inferred = inferModeFromSelection(ctx, pi, runtime.data);
         if (inferred) {

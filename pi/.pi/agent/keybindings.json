@@ -1,3 +1,5 @@
 {
-  "app.thinking.cycle": "ctrl+shift+tab"
+  "app.thinking.cycle": "ctrl+shift+tab",
+  "app.thinking.toggle": "ctrl+alt+t",
+  "app.tree.filter.noTools": []
 }

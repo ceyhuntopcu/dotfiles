@@ -7,18 +7,16 @@
   // Reuse the Claude Code login (Team plan) for Anthropic models — no separate API key.
   // opencode-claude-auth reads Claude Code's stored OAuth token (org-sanctioned; coworker uses it).
   "plugin": [
-    "opencode-claude-auth@latest",
-    "oh-my-openagent@latest"
+    "opencode-claude-auth@latest"
   ],
 
   // Default = Claude Opus 4.8 via the Claude Code subscription. Cheap background tasks stay on Kimi.
   "model": "anthropic/claude-opus-4-8",
   "small_model": "fireworks-ai/accounts/fireworks/models/kimi-k2p7-code",
 
-  // Start every session in Prometheus (oh-my-openagent's planner) — you always plan before executing.
-  "default_agent": "prometheus",
-
   // Kimi 2.7 Code via Fireworks (OpenAI-compatible). Key added via `opencode auth login` -> Fireworks.
+  // OpenAI GPT-5.6 via OpenRouter — authenticate with `/connect` -> OpenRouter after restarting.
+  // Anthropic Opus 4.8 / Sonnet 5 via OpenRouter (note the '.' in model IDs, unlike Anthropic's own '-' IDs).
   "provider": {
     "fireworks-ai": {
       "npm": "@ai-sdk/openai-compatible",
@@ -29,12 +27,47 @@
         "accounts/fireworks/models/deepseek-v4-pro": { "name": "DeepSeek V4 Pro" },
         "accounts/fireworks/models/glm-5p2": { "name": "GLM 5.2" }
       }
+    },
+    "openrouter": {
+      "npm": "@openrouter/ai-sdk-provider",
+      "name": "OpenRouter",
+      "options": {},
+      "whitelist": [
+        "openai/gpt-5.6-sol",
+        "openai/gpt-5.6-terra",
+        "openai/gpt-5.6-luna",
+        "openai/gpt-5.5",
+        "anthropic/claude-opus-4.8",
+        "anthropic/claude-sonnet-5",
+        "anthropic/claude-fable-5"
+      ],
+      "models": {
+        "openai/gpt-5.6-sol": { "name": "GPT-5.6 Sol" },
+        "openai/gpt-5.6-terra": { "name": "GPT-5.6 Terra" },
+        "openai/gpt-5.6-luna": { "name": "GPT-5.6 Luna" },
+        "openai/gpt-5.5": { "name": "GPT-5.5" },
+        "anthropic/claude-opus-4.8": { "name": "Claude Opus 4.8 (OpenRouter)" },
+        "anthropic/claude-sonnet-5": { "name": "Claude Sonnet 5 (OpenRouter)" },
+        "anthropic/claude-fable-5": { "name": "Claude Fable 5 (OpenRouter)" }
+      }
     }
+  },
+
+  // Per-agent model overrides — build/plan stay on Anthropic (quality matters most
+  // there); general/explore move off Anthropic so parallel bursts don't compete
+  // with build and don't trigger "provider overloaded". title/summary/compaction
+  // are left alone — they already inherit small_model (Kimi).
+  "agent": {
+    "build": { "model": "anthropic/claude-opus-4-8" },
+    "plan": { "model": "anthropic/claude-opus-4-8" },
+    "general": { "model": "openrouter/openai/gpt-5.6-sol" },
+    "explore": { "model": "fireworks-ai/accounts/fireworks/models/kimi-k2p7-code" }
   },
 
   "mcp": {
     "context7": { "type": "remote", "url": "https://mcp.context7.com/mcp" },
     "playwright": { "type": "local", "command": ["npx", "@playwright/mcp@latest"], "enabled": true },
+    "chrome-devtools": { "type": "local", "command": ["npx", "-y", "chrome-devtools-mcp@latest"], "enabled": true },
     // OAuth handled automatically by OpenCode on first use (same as context7).
     "linear": { "type": "remote", "url": "https://mcp.linear.app/mcp" },
     // PAT-based auth (env var, not a secret in this file) — see README for setup.

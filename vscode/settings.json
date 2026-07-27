@@ -14,7 +14,7 @@
   "terminal.integrated.cursorBlinking": true,
 
   // ---- Editor behavior ----
-  "editor.lineNumbers": "off",
+  "editor.lineNumbers": "on",
   "editor.cursorSurroundingLines": 6,
   "editor.renderLineHighlight": "none",
   "editor.semanticHighlighting.enabled": true,

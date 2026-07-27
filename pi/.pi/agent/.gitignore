@@ -10,3 +10,5 @@ npm/
 git/
 mcp-cache.json
 mcp-npx-cache.json
+models-store.json
+extensions/**/node_modules/

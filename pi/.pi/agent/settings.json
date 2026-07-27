@@ -1,12 +1,16 @@
 {
-  "lastChangelogVersion": "0.80.2",
+  "lastChangelogVersion": "0.82.1",
   "theme": "twilight_light",
   "defaultProvider": "fireworks",
   "defaultModel": "accounts/fireworks/models/kimi-k2p7-code",
-  "defaultThinkingLevel": "high",
+  "defaultThinkingLevel": "medium",
   "packages": [
     "npm:@mjakl/pi-subagent",
-    "git:github.com/nicobailon/pi-mcp-adapter"
+    "git:github.com/nicobailon/pi-mcp-adapter",
+    "npm:@gotgenes/pi-anthropic-auth",
+    "npm:pi-otty",
+    "npm:@mobrienv/pi-tidy-tools",
+    "npm:pi-powerline-footer"
   ],
   "editorPaddingX": 0,
   "quietStartup": true,

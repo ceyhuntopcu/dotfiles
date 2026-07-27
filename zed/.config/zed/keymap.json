@@ -26,6 +26,7 @@
       "cmd-delete": "editor::DeleteToEndOfLine",
       "alt-backspace": "editor::DeleteToPreviousWordStart",
       "alt-delete": "editor::DeleteToNextWordEnd",
+      "cmd-shift-g": "git_panel::ToggleFocus",
     },
   },
   {
