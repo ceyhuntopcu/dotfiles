@@ -1,9 +1,9 @@
 {
   "lastChangelogVersion": "0.82.1",
   "theme": "twilight_light",
-  "defaultProvider": "fireworks",
-  "defaultModel": "accounts/fireworks/models/kimi-k2p7-code",
-  "defaultThinkingLevel": "medium",
+  "defaultProvider": "anthropic",
+  "defaultModel": "claude-opus-5",
+  "defaultThinkingLevel": "high",
   "packages": [
     "npm:@mjakl/pi-subagent",
     "git:github.com/nicobailon/pi-mcp-adapter",
@@ -11,6 +11,14 @@
     "npm:pi-otty",
     "npm:@mobrienv/pi-tidy-tools"
   ],
+  "providers": {
+    "openai-codex": {
+      "modelOverrides": {
+        "gpt-5.6-sol": { "contextWindow": 1050000 },
+        "gpt-5.6-terra": { "contextWindow": 1050000 }
+      }
+    }
+  },
   "editorPaddingX": 0,
   "quietStartup": true,
   "collapseChangelog": true,
