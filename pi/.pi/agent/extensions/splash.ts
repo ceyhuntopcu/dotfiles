@@ -182,6 +182,12 @@ export default function (pi: ExtensionAPI) {
 	pi.on("session_start", (_event, ctx) => {
 		if (!ctx.hasUI || _event.reason !== "startup") return;
 
+		// "startup" also fires when pi auto-restores the last session on launch —
+		// only show the splash for a genuinely empty session (no prior messages),
+		// otherwise it renders on top of scrollable history and blocks scrolling.
+		const hasHistory = (ctx.sessionManager?.getBranch?.() ?? []).length > 0;
+		if (hasHistory) return;
+
 		ctx_ref = ctx;
 		splashActive = true;
 		t = 0;
