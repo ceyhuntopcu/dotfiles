@@ -26,6 +26,12 @@
       "modelId": "claude-fable-5",
       "thinkingLevel": "xhigh",
       "color": "warning"
+    },
+    "opus": {
+      "provider": "anthropic",
+      "modelId": "claude-opus-5",
+      "thinkingLevel": "high",
+      "color": "info"
     }
   }
 }
