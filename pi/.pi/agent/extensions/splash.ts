@@ -195,15 +195,11 @@ export default function (pi: ExtensionAPI) {
 		ctx.ui.setWidget("splash", (tui, _theme) => {
 			tuiRef = tui;
 
-			// ~3 fps instead of ~12.5 fps — almost every glyph in the orb changes
-			// each tick regardless of diffing, so redraw rate (not motion itself)
-			// is what was strobing on this terminal. Same overall ripple speed
-			// (t increment scaled up to match the longer interval), just sampled
-			// far less often, so it animates without flashing.
+			// ~12 fps — small t step for a slow, meditative animation
 			animTimer = setInterval(() => {
-				t += 0.15;
-				tui.requestRender();
-			}, 300);
+				t += 0.04;
+				tui.requestRender(true);
+			}, 80);
 
 			return {
 				dispose() {
