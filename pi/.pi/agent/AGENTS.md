@@ -54,6 +54,34 @@ Local-only destructive commands (e.g. `rm node_modules`, `docker system prune`) 
 - Show file paths clearly when discussing code.
 - When you finish a task, end with a short summary of what changed — not a victory lap.
 
+## 🧵 Subagent delegation — divide and conquer automatically
+
+Proactively use `subagent_spawn` for this **without waiting for me to ask** whenever a task has multiple genuinely independent parts that can be explored/researched/reviewed separately — e.g. "understand how X's backend works" (split by layer: schema, API routes, services, frontend), "research these N libraries," "check what changed across these M unrelated modules."
+
+- Default harness: `pi`, model: Kimi 2.7 Code (`fireworks/accounts/fireworks/models/kimi-k2p7-code`) — cheap and fast for exploration/research legwork. Only reach for the `claude`/`codex` harnesses when the task specifically calls for that model's judgment, not by default.
+- Give each subagent a fully self-contained prompt (exact paths/context it needs) — it cannot see this conversation.
+- Max 4 concurrent — if there are more independent parts than that, batch them.
+- Wait for all of them, then synthesize their findings into one coherent answer for me — don't just paste their raw output back.
+- Skip all of this for small/fast tasks (e.g. checking 2-3 small files) — spawning and waiting on subagents costs more than just doing it directly in a few seconds.
+
+### Specific patterns to apply automatically
+
+- **PR/diff review**: for a review covering multiple changed files or packages, spawn one Kimi subagent per file/package to flag issues in its slice, then synthesize into one review — don't review a large diff top-to-bottom yourself.
+- **Cross-package research**: when a question spans multiple packages (e.g. `packages/db` + `packages/schemas` + `apps/web`), split exploration by package instead of reading across all of them yourself.
+- **Debugging with multiple hypotheses**: when a bug has 2+ plausible root causes, spawn one subagent per hypothesis to investigate and rule in/out in parallel, rather than chasing one theory at a time.
+- **Refactor blast-radius check**: before a large rename/API/schema change, spawn subagents to check different call-sites/consumers across the codebase for what would break.
+- **Researching external libraries**: when comparing/evaluating multiple unrelated libraries or dependencies, spawn one subagent per library.
+
+### Cross-model verification
+
+After finishing significant work (a real implementation, a design decision, anything security- or correctness-sensitive — not small edits), spawn **one verification subagent using a different model family than whatever did the primary work**, and have it critique/check the result before treating it as final:
+
+- Primary work was done by Claude (Fable, via `claude` harness or `anthropic` provider) → verify with the `codex` harness (GPT).
+- Primary work was done by GPT/Codex (`codex` harness or `openai-codex` provider) → verify with the `claude` harness (Fable).
+- Primary work was done by anything else (Kimi, GLM, DeepSeek via Fireworks) → verify with either the `claude` or `codex` harness — pick one.
+
+Report the verifier's findings to me plainly — don't silently "fix" disagreements yourself. If the verifier flags something, tell me what it flagged and what you did about it.
+
 ## 🧠 Persistent memory
 
 This section is your long-term memory — it is loaded into your context every session. Use it so I don't have to repeat myself across sessions.

@@ -22,8 +22,8 @@
   },
   "theme": {
     "mode": "system",
-    "light": "Twilight Light",
-    "dark": "Rosé Pine Moon"
+    "light": "Github Light",
+    "dark": "Github Dark"
   },
   "icon_theme": {
     "mode": "system",
