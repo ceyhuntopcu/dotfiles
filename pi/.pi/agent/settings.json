@@ -9,8 +9,7 @@
     "git:github.com/nicobailon/pi-mcp-adapter",
     "npm:@gotgenes/pi-anthropic-auth",
     "npm:pi-otty",
-    "npm:@mobrienv/pi-tidy-tools",
-    "npm:pi-powerline-footer"
+    "npm:@mobrienv/pi-tidy-tools"
   ],
   "editorPaddingX": 0,
   "quietStartup": true,
