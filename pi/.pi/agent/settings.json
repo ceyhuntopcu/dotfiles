@@ -1,21 +1,32 @@
 {
   "lastChangelogVersion": "0.82.1",
   "theme": "twilight_light",
-  "defaultProvider": "anthropic",
-  "defaultModel": "claude-opus-5",
+  "defaultProvider": "openai-codex",
+  "defaultModel": "gpt-5.6-sol",
   "defaultThinkingLevel": "high",
   "packages": [
     "npm:@mjakl/pi-subagent",
     "git:github.com/nicobailon/pi-mcp-adapter",
     "npm:@gotgenes/pi-anthropic-auth",
     "npm:pi-otty",
-    "npm:@mobrienv/pi-tidy-tools"
+    "npm:@mobrienv/pi-tidy-tools",
+    {
+      "source": "npm:pi-cozy-ui",
+      "extensions": []
+    },
+    "npm:pi-zentui",
+    "npm:pi-neat-ui",
+    "npm:pi-cc-header"
   ],
   "providers": {
     "openai-codex": {
       "modelOverrides": {
-        "gpt-5.6-sol": { "contextWindow": 1050000 },
-        "gpt-5.6-terra": { "contextWindow": 1050000 }
+        "gpt-5.6-sol": {
+          "contextWindow": 1050000
+        },
+        "gpt-5.6-terra": {
+          "contextWindow": 1050000
+        }
       }
     }
   },
