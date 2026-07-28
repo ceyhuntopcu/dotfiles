@@ -15,23 +15,23 @@
       "thinkingLevel": "medium",
       "color": "success"
     },
-    "high": {
+    "high-gpt": {
       "provider": "openai-codex",
       "modelId": "gpt-5.6-sol",
       "thinkingLevel": "high",
       "color": "accent"
+    },
+    "high-opus": {
+      "provider": "anthropic",
+      "modelId": "claude-opus-5",
+      "thinkingLevel": "high",
+      "color": "info"
     },
     "ultra": {
       "provider": "anthropic",
       "modelId": "claude-fable-5",
       "thinkingLevel": "xhigh",
       "color": "warning"
-    },
-    "opus": {
-      "provider": "anthropic",
-      "modelId": "claude-opus-5",
-      "thinkingLevel": "high",
-      "color": "info"
     }
   }
 }

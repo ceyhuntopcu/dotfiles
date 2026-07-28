@@ -5,18 +5,10 @@
   "defaultModel": "gpt-5.6-sol",
   "defaultThinkingLevel": "high",
   "packages": [
-    "npm:@mjakl/pi-subagent",
     "git:github.com/nicobailon/pi-mcp-adapter",
     "npm:@gotgenes/pi-anthropic-auth",
     "npm:pi-otty",
-    "npm:@mobrienv/pi-tidy-tools",
-    {
-      "source": "npm:pi-cozy-ui",
-      "extensions": []
-    },
-    "npm:pi-zentui",
-    "npm:pi-neat-ui",
-    "npm:pi-cc-header"
+    "npm:@mobrienv/pi-tidy-tools"
   ],
   "providers": {
     "openai-codex": {
@@ -37,5 +29,6 @@
   "compaction": {
     "enabled": true
   },
-  "hideThinkingBlock": false
+  "hideThinkingBlock": false,
+  "clearOnStart": true
 }

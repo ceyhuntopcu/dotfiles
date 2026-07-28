@@ -4,21 +4,6 @@ import path from "node:path";
 import os from "node:os";
 import fs from "node:fs/promises";
 import type { Dirent } from "node:fs";
-// pi-cozy-ui's own extensions/input-field.ts is excluded via package filtering
-// in settings.json (editor customizations can't compose — whoever calls
-// setEditorComponent last wins outright). We reuse its lib/* layout helpers
-// directly to render the same left-bar box, with the pi mode name spliced
-// into the status line. These aren't a declared public API, so a future
-// pi-cozy-ui version could restructure lib/ and break this import.
-import { composeEditorLayout } from "pi-cozy-ui/lib/editor-layout.js";
-import { parseGitStatus, type GitStatusCounts } from "pi-cozy-ui/lib/git-status.js";
-import {
-    buildFullWidthRow,
-    formatCost,
-    formatCwd,
-    formatTokenWindow,
-    statusLine,
-} from "pi-cozy-ui/lib/text-layout.js";
 
 // =============================================================================
 // Modes
@@ -374,6 +359,10 @@ function getModeBorderColor(theme: any, pi: ExtensionAPI, mode: string): (text: 
     } catch {
         return theme.getThinkingBorderColor("off");
     }
+}
+
+function formatModeLabel(mode: string): string {
+    return `│ ${mode} │`;
 }
 
 async function resolveModesPath(cwd: string): Promise<string> {
@@ -959,89 +948,13 @@ interface PromptEntry {
     timestamp: number;
 }
 
-/** Per-session cost accumulator fed by `turn_end` events. */
-interface CozySessionMetrics {
-    onTurnEnd(event: unknown): void;
-    /** Formatted cumulative cost for display (e.g. "$0.12"). */
-    readonly costStr: string;
-}
-
-function createCozyMetrics(): CozySessionMetrics {
-    let cost = 0;
-    return {
-        onTurnEnd(event: unknown) {
-            const msg = event as { message?: { usage?: { cost?: { total: number } } } };
-            const total = msg.message?.usage?.cost?.total;
-            if (total != null) cost += total;
-        },
-        get costStr() {
-            return formatCost(cost);
-        },
-    };
-}
-
-/** Cached Git branch and working-tree state for the editor's footer row. */
-interface CozyGitSnapshot {
-    branch: string | null;
-    status: GitStatusCounts;
-}
-
-interface CozyGitTracker {
-    readonly snapshot: CozyGitSnapshot | null;
-    stop(): void;
-}
-
-const COZY_BRANCH_FETCH_INTERVAL = 10_000; // 10s
-
-function createCozyGitTracker(exec: ExtensionAPI["exec"], cwd: string, onChange: () => void): CozyGitTracker {
-    let cachedSnapshot: CozyGitSnapshot | null = null;
-    let inFlight = false;
-    const intervalId = setInterval(() => void refresh(), COZY_BRANCH_FETCH_INTERVAL);
-
-    function setSnapshot(snapshot: CozyGitSnapshot | null): void {
-        cachedSnapshot = snapshot;
-        onChange();
-    }
-
-    async function refresh(): Promise<void> {
-        if (inFlight) return;
-        inFlight = true;
-        try {
-            const statusResult = await exec("git", ["status", "--porcelain=v1", "-z"], { cwd, timeout: 3000 });
-            if (statusResult.code !== 0) {
-                setSnapshot(null);
-                return;
-            }
-            const branchResult = await exec("git", ["branch", "--show-current"], { cwd, timeout: 3000 });
-            setSnapshot({
-                branch: branchResult.code === 0 ? branchResult.stdout.trim() || null : null,
-                status: parseGitStatus(statusResult.stdout),
-            });
-        } catch {
-            setSnapshot(null);
-        } finally {
-            inFlight = false;
-        }
-    }
-
-    void refresh();
-
-    return {
-        get snapshot() {
-            return cachedSnapshot;
-        },
-        stop() {
-            clearInterval(intervalId);
-        },
-    };
-}
-
-/** Per-session state for the cozy-box editor (git polling + cumulative cost). Created once per session_start. */
-let cozySession: { metrics: CozySessionMetrics; vcs: CozyGitTracker } | null = null;
-
 class PromptEditor extends CustomEditor {
-    public ctxRef?: ExtensionContext;
-    public piRef?: ExtensionAPI;
+    public modeLabelProvider?: () => string;
+    /**
+     * Color function for the mode label. If unset, the label inherits the border color.
+     * We use this to keep the label consistent (e.g. same as the footer/status bar).
+     */
+    public modeLabelColor?: (text: string) => string;
     private lockedBorder = false;
     private _borderColor?: (text: string) => string;
 
@@ -1050,7 +963,7 @@ class PromptEditor extends CustomEditor {
         theme: ConstructorParameters<typeof CustomEditor>[1],
         keybindings: ConstructorParameters<typeof CustomEditor>[2],
     ) {
-        super(tui, theme, keybindings, { paddingX: 0 });
+        super(tui, theme, keybindings);
         delete (this as { borderColor?: (text: string) => string }).borderColor;
         Object.defineProperty(this, "borderColor", {
             get: () => this._borderColor ?? ((text: string) => text),
@@ -1067,68 +980,39 @@ class PromptEditor extends CustomEditor {
         this.lockedBorder = true;
     }
 
-    // pi-cozy-ui's left-bar box layout (extensions/input-field.ts), with the
-    // current pi mode name spliced into the status line in place of a
-    // separate top-border chip.
     render(width: number): string[] {
         const lines = super.render(width);
-        const ctx = this.ctxRef;
-        const pi = this.piRef;
-        if (lines.length === 0 || !ctx || !pi) return lines;
+        const mode = this.modeLabelProvider?.();
+        if (!mode) return lines;
 
-        const thm = ctx.ui.theme;
-        const bar = (text: string) => this.borderColor(text);
-        const prefix = bar("┃") + " ";
-        const blankBar = bar("┃") + " ".repeat(Math.max(0, width - 1));
+        const stripAnsi = (s: string) => s.replace(/\x1b\[[0-9;]*m/g, "");
+        const topPlain = stripAnsi(lines[0] ?? "");
 
-        const usage = ctx.getContextUsage();
-        const contextPercent = usage?.percent;
-        const ctxPct = typeof contextPercent === "number" ? `${Math.round(contextPercent)}%` : "?";
-        const contextWindow = usage?.contextWindow ?? ctx.model?.contextWindow;
-        const contextWindowLabel = contextWindow ? formatTokenWindow(contextWindow) : "?";
+        // If the editor is scrolled, the built-in editor renders a scroll indicator on the top border.
+        // Preserve it, but still show the mode label.
+        const scrollPrefixMatch = topPlain.match(/^(─── ↑ \d+ more )/);
+        const prefix = scrollPrefixMatch?.[1] ?? "──";
 
-        const thinking = pi.getThinkingLevel();
-        const modeChip = getModeBorderColor(thm, pi, runtime.currentMode)(`[${runtime.currentMode}]`) + " ";
-        const statusLeft = ctx.model
-            ? modeChip +
-              thm.fg("muted", ctx.model.provider) +
-              " " +
-              thm.fg("accent", ctx.model.id) +
-              " " +
-              this.borderColor(`${thinking} `)
-            : modeChip + thm.fg("muted", "no model ");
-        const statusRight =
-            thm.fg("accent", ctxPct) + thm.fg("muted", `/${contextWindowLabel} `) + thm.fg("text", cozySession?.metrics.costStr ?? "$0") + " ";
+        let label = formatModeLabel(mode);
 
-        const cwdStr = thm.fg("text", formatCwd(ctx.cwd));
-        const git = cozySession?.vcs.snapshot ?? null;
-        const gitCount = (indicator: string, count: number, color: "muted" | "warning" | "error") =>
-            count > 0 ? thm.fg(color, `${indicator}${count}`) : null;
-        let gitStr = thm.fg("muted", "-");
-        if (git) {
-            const branch = git.branch ?? "HEAD";
-            gitStr = [
-                thm.fg(git.branch ? "success" : "muted", branch),
-                gitCount("+", git.status.staged, "warning"),
-                gitCount("!", git.status.modified, "warning"),
-                gitCount("-", git.status.deleted, "warning"),
-                gitCount("?", git.status.untracked, "muted"),
-                gitCount("R", git.status.renamed, "warning"),
-                gitCount("U", git.status.conflicted, "error"),
-            ]
-                .filter((part): part is string => part !== null)
-                .join(" ");
-        }
+        // Compute how much room we have for the label core (without truncating the prefix).
+        const labelLeftSpace = prefix.endsWith(" ") ? "" : " ";
+        const labelRightSpace = " ";
+        const minRightBorder = 1; // keep at least one border cell on the right
+        const maxLabelLen = Math.max(0, width - prefix.length - labelLeftSpace.length - labelRightSpace.length - minRightBorder);
+        if (maxLabelLen <= 0) return lines;
+        if (label.length > maxLabelLen) label = label.slice(0, maxLabelLen);
 
-        return composeEditorLayout({
-            editorLines: lines,
-            width,
-            prefix,
-            blankBar,
-            status: statusLine(prefix, statusLeft, statusRight, width),
-            footerRow: buildFullWidthRow(cwdStr, gitStr, width),
-            contentColor: (text) => thm.fg("thinkingText", text),
-        });
+        const labelChunk = `${labelLeftSpace}${label}${labelRightSpace}`;
+
+        const remaining = width - prefix.length - labelChunk.length;
+        if (remaining < 0) return lines;
+
+        const right = "─".repeat(Math.max(0, remaining));
+
+        const labelColor = this.modeLabelColor ?? ((text: string) => this.borderColor(text));
+        lines[0] = this.borderColor(prefix) + labelColor(labelChunk) + this.borderColor(right);
+        return lines;
     }
 
     public requestRenderNow(): void {
@@ -1285,8 +1169,10 @@ function setEditor(pi: ExtensionAPI, ctx: ExtensionContext, history: PromptEntry
     ctx.ui.setEditorComponent((tui, theme, keybindings) => {
         const editor = new PromptEditor(tui, theme, keybindings);
         requestEditorRender = () => editor.requestRenderNow();
-        editor.ctxRef = ctx;
-        editor.piRef = pi;
+        editor.modeLabelProvider = () => runtime.currentMode;
+        // Keep the mode label color stable (match footer/status bar).
+        editor.modeLabelColor = (text: string) =>
+            getModeBorderColor(uiTheme, pi, runtime.currentMode)(uiTheme.bold(text));
         const borderColor = (text: string) => {
             const isBashMode = editor.getText().trimStart().startsWith("!");
             if (isBashMode) {
@@ -1400,22 +1286,10 @@ export default function (pi: ExtensionAPI) {
         },
     });
 
-    pi.on("turn_end", (event) => {
-        cozySession?.metrics.onTurnEnd(event);
-    });
-
     pi.on("session_start", async (_event, ctx) => {
         lastObservedModel = { provider: ctx.model?.provider, modelId: ctx.model?.id };
         await ensureRuntime(pi, ctx);
         customOverlay = null;
-
-        // Per-session cozy-box state (git polling + cumulative cost), created
-        // once per session and read from PromptEditor.render() on every frame.
-        cozySession?.vcs.stop();
-        cozySession = {
-            metrics: createCozyMetrics(),
-            vcs: createCozyGitTracker(pi.exec, ctx.cwd, () => requestEditorRender?.()),
-        };
 
         // If a startupMode is configured, force it on every open. This overrides
         // pi's default behavior of restoring the last-used model from the existing
