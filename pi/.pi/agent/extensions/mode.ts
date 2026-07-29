@@ -1287,6 +1287,12 @@ export default function (pi: ExtensionAPI) {
     });
 
     pi.on("session_start", async (_event, ctx) => {
+        // Headless sessions (subagent_spawn children run via bindExtensions({
+        // mode: "print" })) have no UI to cycle modes in. Without this guard,
+        // startupMode below forcibly resets every subagent back to "low",
+        // silently discarding whatever model subagent_spawn was asked for.
+        if (!ctx.hasUI) return;
+
         lastObservedModel = { provider: ctx.model?.provider, modelId: ctx.model?.id };
         await ensureRuntime(pi, ctx);
         customOverlay = null;

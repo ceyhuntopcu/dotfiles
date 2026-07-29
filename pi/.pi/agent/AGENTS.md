@@ -119,5 +119,6 @@ This section is your long-term memory — it is loaded into your context every s
 
 - My name is Ceyhun (ceyhun@planned.com); I work on **Planned**, an event-management platform in a pnpm monorepo.
 - My CLI stack: **Claude Code** is my batteries-included daily driver; **Pi** is my tool for **Kimi** (fast/cheap model via Fireworks).
+- Kimi K3 implementation handoffs through Fireworks are fixed and should be used normally again.
 - <!-- append new facts below this line -->
 
