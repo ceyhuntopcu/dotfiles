@@ -254,6 +254,11 @@ export default function (pi: ExtensionAPI) {
           description: SUBAGENT_SPAWN_PARAMETER_DESCRIPTIONS.reasoningEffort,
         }),
       ),
+      restrict_settings: Type.Optional(
+        Type.Boolean({
+          description: SUBAGENT_SPAWN_PARAMETER_DESCRIPTIONS.restrictSettings,
+        }),
+      ),
     }),
     async execute(_toolCallId, params, _signal, _onUpdate, ctx) {
       const manager = await getManager();
@@ -273,6 +278,7 @@ export default function (pi: ExtensionAPI) {
           cwd,
           model: params.model,
           reasoningEffort: params.reasoning_effort,
+          restrictSettings: params.restrict_settings,
           parent: {
             parentCwd: ctx.cwd,
             projectTrusted: resolveChildProjectTrust({

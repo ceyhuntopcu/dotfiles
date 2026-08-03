@@ -334,7 +334,12 @@ const makeClaudeSession = (
             allowDangerouslySkipPermissions: true,
             // For cwds pi marked untrusted, restrict to user-level settings so
             // an untrusted project's config cannot reconfigure the child.
-            ...(task.parent.projectTrusted
+            // Same restriction if the caller explicitly said this task
+            // doesn't need project settings/MCP servers (e.g. a verification
+            // pass that only needs read/grep/bash) — a trusted cwd still
+            // loads everything by default, which is real, avoidable startup
+            // cost for tasks that never touch any of it.
+            ...(task.parent.projectTrusted && !task.restrictSettings
               ? {}
               : { settingSources: ["user" as const] }),
             includePartialMessages: true,

@@ -55,6 +55,13 @@ export interface SpawnTask {
   readonly model?: string;
   /** Shared effort scale; each backend maps it to its native equivalent. */
   readonly reasoningEffort?: ReasoningEffort;
+  /**
+   * Skip loading project-level settings/MCP servers the task doesn't need
+   * (e.g. a verification pass that only needs read/grep/bash). Currently
+   * only honored by the claude backend, which otherwise loads full project
+   * settings for any trusted cwd regardless of what the task actually uses.
+   */
+  readonly restrictSettings?: boolean;
   readonly parent: ParentContext;
 }
 

@@ -27,6 +27,8 @@ export const SUBAGENT_SPAWN_PARAMETER_DESCRIPTIONS = {
     'Model hint, interpreted by the chosen harness (pi: "provider/model-id" or model id; claude: model alias like "sonnet"/"opus"; codex: model slug). Omit for the harness default (pi inherits the current model).',
   reasoningEffort:
     "Reasoning effort on a shared scale; the harness maps it to its nearest native equivalent (pi thinking level, codex reasoning effort, claude thinking budget). Omit for the harness default (pi inherits the current level).",
+  restrictSettings:
+    "Skip loading project-level settings and MCP servers for tasks that only need read/grep/bash-style tools (e.g. code review or verification). Currently only honored by the claude harness. Default false.",
 };
 
 /** Builds the subagent_spawn result that tells the parent model how to continue or inspect the child. */

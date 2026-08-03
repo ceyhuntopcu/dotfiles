@@ -5,7 +5,7 @@
   "modes": {
     "low": {
       "provider": "fireworks",
-      "modelId": "accounts/fireworks/models/kimi-k2p7-code",
+      "modelId": "accounts/fireworks/routers/kimi-k2p7-code-fast",
       "thinkingLevel": "medium",
       "color": "pink"
     },
