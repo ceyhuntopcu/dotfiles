@@ -4,18 +4,22 @@
   // Never use OpenCode-hosted models.
   "disabled_providers": ["opencode"],
 
-  // Reuse the Claude Code login (Team plan) for Anthropic models — no separate API key.
-  // opencode-claude-auth reads Claude Code's stored OAuth token (org-sanctioned; coworker uses it).
+  // Reuse subscription logins instead of separate API keys/billing:
+  // - opencode-claude-auth reads Claude Code's stored OAuth token (org-sanctioned; coworker uses it).
+  // - opencode-openai-codex-auth uses a ChatGPT Plus/Pro OAuth login (same idea, for GPT-5.6/Codex).
   "plugin": [
-    "opencode-claude-auth@latest"
+    "opencode-claude-auth@latest",
+    "opencode-openai-codex-auth@latest"
   ],
 
-  // Default = Claude Opus 4.8 via the Claude Code subscription. Cheap background tasks stay on Kimi.
-  "model": "anthropic/claude-opus-4-8",
+  // Default = Claude Opus 5 via the Claude Code subscription. Cheap background tasks stay on Kimi.
+  "model": "anthropic/claude-opus-5",
   "small_model": "fireworks-ai/accounts/fireworks/models/kimi-k2p7-code",
 
-  // Kimi 2.7 Code via Fireworks (OpenAI-compatible). Key added via `opencode auth login` -> Fireworks.
-  // OpenAI GPT-5.6 via OpenRouter — authenticate with `/connect` -> OpenRouter after restarting.
+  // Kimi 2.7 Code / K3 via Fireworks (OpenAI-compatible). Key added via `opencode auth login` -> Fireworks.
+  // OpenAI GPT-5.6 via the ChatGPT/Codex OAuth plugin above (like pi's `openai-codex` provider) —
+  // no separate API key. OpenRouter kept as a fallback route to the same models if the OAuth plugin
+  // ever needs replacing.
   // Anthropic Opus 4.8 / Sonnet 5 via OpenRouter (note the '.' in model IDs, unlike Anthropic's own '-' IDs).
   "provider": {
     "fireworks-ai": {
@@ -24,8 +28,52 @@
       "options": { "baseURL": "https://api.fireworks.ai/inference/v1" },
       "models": {
         "accounts/fireworks/models/kimi-k2p7-code": { "name": "Kimi 2.7 Code" },
+        "accounts/fireworks/models/kimi-k3": { "name": "Kimi K3" },
         "accounts/fireworks/models/deepseek-v4-pro": { "name": "DeepSeek V4 Pro" },
         "accounts/fireworks/models/glm-5p2": { "name": "GLM 5.2" }
+      }
+    },
+    // ChatGPT Plus/Pro OAuth backend (opencode-openai-codex-auth), mirroring pi's openai-codex
+    // provider. store:false + reasoning.encrypted_content are required by this backend.
+    "openai": {
+      "options": {
+        "reasoningEffort": "medium",
+        "reasoningSummary": "auto",
+        "textVerbosity": "medium",
+        "include": ["reasoning.encrypted_content"],
+        "store": false
+      },
+      "models": {
+        "gpt-5.6-sol": {
+          "name": "GPT-5.6 Sol (OAuth)",
+          "limit": { "context": 1050000, "output": 128000 },
+          "modalities": { "input": ["text", "image"], "output": ["text"] },
+          "variants": {
+            "low": { "reasoningEffort": "low", "reasoningSummary": "auto", "textVerbosity": "medium" },
+            "medium": { "reasoningEffort": "medium", "reasoningSummary": "auto", "textVerbosity": "medium" },
+            "high": { "reasoningEffort": "high", "reasoningSummary": "detailed", "textVerbosity": "medium" }
+          }
+        },
+        "gpt-5.6-terra": {
+          "name": "GPT-5.6 Terra (OAuth)",
+          "limit": { "context": 1050000, "output": 128000 },
+          "modalities": { "input": ["text", "image"], "output": ["text"] },
+          "variants": {
+            "low": { "reasoningEffort": "low", "reasoningSummary": "auto", "textVerbosity": "medium" },
+            "medium": { "reasoningEffort": "medium", "reasoningSummary": "auto", "textVerbosity": "medium" },
+            "high": { "reasoningEffort": "high", "reasoningSummary": "detailed", "textVerbosity": "medium" }
+          }
+        },
+        "gpt-5.6-luna": {
+          "name": "GPT-5.6 Luna (OAuth)",
+          "limit": { "context": 1050000, "output": 128000 },
+          "modalities": { "input": ["text", "image"], "output": ["text"] },
+          "variants": {
+            "low": { "reasoningEffort": "low", "reasoningSummary": "auto", "textVerbosity": "medium" },
+            "medium": { "reasoningEffort": "medium", "reasoningSummary": "auto", "textVerbosity": "medium" },
+            "high": { "reasoningEffort": "high", "reasoningSummary": "detailed", "textVerbosity": "medium" }
+          }
+        }
       }
     },
     "openrouter": {
@@ -38,15 +86,17 @@
         "openai/gpt-5.6-luna",
         "openai/gpt-5.5",
         "anthropic/claude-opus-4.8",
+        "anthropic/claude-opus-5",
         "anthropic/claude-sonnet-5",
         "anthropic/claude-fable-5"
       ],
       "models": {
-        "openai/gpt-5.6-sol": { "name": "GPT-5.6 Sol" },
-        "openai/gpt-5.6-terra": { "name": "GPT-5.6 Terra" },
-        "openai/gpt-5.6-luna": { "name": "GPT-5.6 Luna" },
+        "openai/gpt-5.6-sol": { "name": "GPT-5.6 Sol (OpenRouter)" },
+        "openai/gpt-5.6-terra": { "name": "GPT-5.6 Terra (OpenRouter)" },
+        "openai/gpt-5.6-luna": { "name": "GPT-5.6 Luna (OpenRouter)" },
         "openai/gpt-5.5": { "name": "GPT-5.5" },
         "anthropic/claude-opus-4.8": { "name": "Claude Opus 4.8 (OpenRouter)" },
+        "anthropic/claude-opus-5": { "name": "Claude Opus 5 (OpenRouter)" },
         "anthropic/claude-sonnet-5": { "name": "Claude Sonnet 5 (OpenRouter)" },
         "anthropic/claude-fable-5": { "name": "Claude Fable 5 (OpenRouter)" }
       }
@@ -58,9 +108,9 @@
   // with build and don't trigger "provider overloaded". title/summary/compaction
   // are left alone — they already inherit small_model (Kimi).
   "agent": {
-    "build": { "model": "anthropic/claude-opus-4-8" },
-    "plan": { "model": "anthropic/claude-opus-4-8" },
-    "general": { "model": "openrouter/openai/gpt-5.6-sol" },
+    "build": { "model": "anthropic/claude-opus-5" },
+    "plan": { "model": "anthropic/claude-opus-5" },
+    "general": { "model": "openai/gpt-5.6-sol" },
     "explore": { "model": "fireworks-ai/accounts/fireworks/models/kimi-k2p7-code" }
   },
 
