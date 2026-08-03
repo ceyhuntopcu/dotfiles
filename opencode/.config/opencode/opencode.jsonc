@@ -119,6 +119,10 @@
       "url": "https://api.githubcopilot.com/mcp/",
       "oauth": false,
       "headers": { "Authorization": "Bearer {env:GITHUB_PERSONAL_ACCESS_TOKEN}" }
-    }
+    },
+    // OAuth handled automatically by OpenCode on first use (same as context7/linear) —
+    // the docs describe a static API-key header, but the live server 401s on that and
+    // offers OAuth instead. EU data plane uses https://api-eu.braintrust.dev/mcp instead.
+    "braintrust": { "type": "remote", "url": "https://api.braintrust.dev/mcp" }
   }
 }
