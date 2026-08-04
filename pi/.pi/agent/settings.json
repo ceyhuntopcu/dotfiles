@@ -1,6 +1,9 @@
 {
   "lastChangelogVersion": "0.82.1",
-  "theme": "twilight_light",
+  "theme": {
+    "light": "one-light-pro",
+    "dark": "one-dark-pro"
+  },
   "defaultProvider": "openai-codex",
   "defaultModel": "gpt-5.6-sol",
   "defaultThinkingLevel": "high",

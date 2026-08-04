@@ -1,8 +1,8 @@
 # Ghostty config.
 # Reload with: Cmd+Shift+, in Ghostty (or restart).
 
-# Theme — GitHub Dark / GitHub Light
-theme = dark:GitHub-Dark-Custom,light:GitHub-Light-Custom
+# Theme — One Dark Pro / One Light
+theme = dark:OneDark-Pro-Custom,light:OneLight-Pro-Custom
 
 # Font — Berkeley Mono (licensed). JetBrainsMono Nerd Font kept as fallback for prompt/icon glyphs.
 font-family = "Berkeley Mono"
