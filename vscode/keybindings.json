@@ -44,5 +44,10 @@
     "key": "cmd+shift+i",
     "command": "workbench.action.toggleAuxiliaryBar",
     "when": "auxiliaryBarVisible"
+  },
+  // Cmd+Shift+D — open all changed files as one scrollable multi-diff (overrides Run & Debug view)
+  {
+    "key": "cmd+shift+d",
+    "command": "git.viewChanges"
   }
 ]
