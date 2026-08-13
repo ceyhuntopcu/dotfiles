@@ -1,0 +1,31 @@
+# OpenCode default theme — light
+# Matched to packages/tui/src/theme/assets/opencode.json (light variant)
+
+# Normal colors
+palette = 0=#1a1a1a
+palette = 1=#d1383d
+palette = 2=#3d9a57
+palette = 3=#b0851f
+palette = 4=#3b7dd8
+palette = 5=#7b5bb6
+palette = 6=#318795
+palette = 7=#d4d4d4
+
+# Bright colors
+palette = 8=#a0a0a0
+palette = 9=#d1383d
+palette = 10=#3d9a57
+palette = 11=#b0851f
+palette = 12=#3b7dd8
+palette = 13=#7b5bb6
+palette = 14=#318795
+palette = 15=#ffffff
+
+background = #ffffff
+foreground = #1a1a1a
+
+cursor-color = #3b7dd8
+cursor-text = #ffffff
+
+selection-background = #ebebeb
+selection-foreground = #1a1a1a

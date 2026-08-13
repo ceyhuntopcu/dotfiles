@@ -1,8 +1,8 @@
 # Ghostty config.
 # Reload with: Cmd+Shift+, in Ghostty (or restart).
 
-# Theme — One Dark Pro / One Light
-theme = dark:OneDark-Pro-Custom,light:OneLight-Pro-Custom
+# Theme — OpenCode default (dark / light)
+theme = dark:OpenCode-Dark,light:OpenCode-Light
 
 # Font — Berkeley Mono (licensed). JetBrainsMono Nerd Font kept as fallback for prompt/icon glyphs.
 font-family = "Berkeley Mono"

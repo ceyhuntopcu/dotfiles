@@ -22,11 +22,11 @@
   },
   "theme": {
     "mode": "system",
-    "light": "One Light",
-    "dark": "One Dark Pro"
+    "light": "OpenCode Light",
+    "dark": "OpenCode Dark"
   },
   "icon_theme": {
-    "mode": "system",
+    "mode": "dark",
     "light": "JetBrains New UI Icons (Light)",
     "dark": "JetBrains New UI Icons (Dark)"
   },
