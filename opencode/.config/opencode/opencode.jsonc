@@ -107,6 +107,9 @@
     "explore": { "model": "fireworks-ai/accounts/fireworks/models/kimi-k2p7-code" }
   },
 
+  // Format-on-edit: run detected formatters (Biome, via biome.json) after writes.
+  "formatter": true,
+
   "mcp": {
     "context7": { "type": "remote", "url": "https://mcp.context7.com/mcp" },
     "playwright": { "type": "local", "command": ["npx", "@playwright/mcp@latest"], "enabled": true },
@@ -123,6 +126,11 @@
     // OAuth handled automatically by OpenCode on first use (same as context7/linear) —
     // the docs describe a static API-key header, but the live server 401s on that and
     // offers OAuth instead. EU data plane uses https://api-eu.braintrust.dev/mcp instead.
-    "braintrust": { "type": "remote", "url": "https://api.braintrust.dev/mcp" }
+    "braintrust": { "type": "remote", "url": "https://api.braintrust.dev/mcp" },
+    // Figma desktop MCP server. The remote server (https://mcp.figma.com/mcp) only
+    // allows OAuth clients in Figma's MCP catalog (opencode isn't one -> 403 on
+    // registration), so use the local server instead. Requires the Figma desktop
+    // app running with "Enable desktop MCP server" toggled on in Dev Mode.
+    "figma": { "type": "remote", "url": "http://127.0.0.1:3845/mcp" }
   }
 }
