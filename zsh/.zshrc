@@ -14,6 +14,10 @@ export NVM_DIR="$HOME/.nvm"
 export DOTENV_ENV=development
 export PATH="$HOME/.local/bin:$PATH"
 
+# macOS hands each process only 256 open files. The dev servers watch thousands of
+# folders, so they intermittently die with "EMFILE: too many open files".
+ulimit -n 65536
+
 # pnpm
 export PNPM_HOME="$HOME/Library/pnpm"
 case ":$PATH:" in
@@ -102,4 +106,13 @@ planned-auth() {
 planned-up() {
   planned-auth || return 1
   ( cd "$PLANNED_REPO" && pnpm start:split )
+}
+
+# Codex: launch with the OpenCode theme matching the current macOS appearance.
+# (Codex has no native light/dark auto-switch, so we pick at launch. Exact
+#  OpenCode colors live in ~/.codex/themes/OpenCode-{Dark,Light}.tmTheme.)
+codex() {
+  local theme=OpenCode-Light
+  [[ "$(defaults read -g AppleInterfaceStyle 2>/dev/null)" == Dark ]] && theme=OpenCode-Dark
+  command codex -c tui.theme="$theme" "$@"
 }
