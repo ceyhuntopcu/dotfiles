@@ -120,7 +120,7 @@
   },
   "git_panel": {
     "dock": "left",
-    "tree_view": false,
+    "tree_view": true,
     "button": true,
   },
   "inline_code_actions": false,

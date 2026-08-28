@@ -1,23 +1,8 @@
 {
   "mcpServers": {
-    "context7": {
-      "url": "https://mcp.context7.com/mcp"
-    },
-    "fetch": {
-      "command": "uvx",
-      "args": ["mcp-server-fetch"]
-    },
-    "playwright": {
-      "command": "npx",
-      "args": ["-y", "@playwright/mcp@latest"]
-    },
-    "linear": {
-      "command": "npx",
-      "args": ["-y", "mcp-remote", "https://mcp.linear.app/mcp"]
-    },
-    "vercel": {
-      "command": "npx",
-      "args": ["-y", "mcp-remote", "https://mcp.vercel.com"]
+    "executor": {
+      "command": "executor",
+      "args": ["mcp"]
     },
     "github": {
       "command": "npx",
@@ -28,10 +13,6 @@
         "--header",
         "Authorization: Bearer ${GITHUB_PERSONAL_ACCESS_TOKEN}"
       ]
-    },
-    "chrome-devtools": {
-      "command": "npx",
-      "args": ["-y", "chrome-devtools-mcp@latest"]
     }
   }
 }

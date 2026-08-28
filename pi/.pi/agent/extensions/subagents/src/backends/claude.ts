@@ -332,14 +332,12 @@ const makeClaudeSession = (
             // its tools without interactive permission checks.
             permissionMode: "bypassPermissions",
             allowDangerouslySkipPermissions: true,
+            // Keep child orchestration inside this extension's global manager
+            // and concurrency cap rather than Claude Code's native subagents.
+            disallowedTools: ["Agent", "Task"],
             // For cwds pi marked untrusted, restrict to user-level settings so
             // an untrusted project's config cannot reconfigure the child.
-            // Same restriction if the caller explicitly said this task
-            // doesn't need project settings/MCP servers (e.g. a verification
-            // pass that only needs read/grep/bash) — a trusted cwd still
-            // loads everything by default, which is real, avoidable startup
-            // cost for tasks that never touch any of it.
-            ...(task.parent.projectTrusted && !task.restrictSettings
+            ...(task.parent.projectTrusted
               ? {}
               : { settingSources: ["user" as const] }),
             includePartialMessages: true,

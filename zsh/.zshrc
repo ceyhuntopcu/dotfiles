@@ -84,9 +84,8 @@ eval "$(atuin init zsh)"
 
 if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init zsh)"; fi
 
-# Planned: refresh daily local-dev auth (Vercel env + gcloud), then optionally start
+# Planned: refresh daily local-dev auth (Vercel env + gcloud)
 # Usage: planned-auth  -> refresh creds only
-#        planned-up    -> refresh creds, then `pnpm start:split`
 PLANNED_REPO="$HOME/Documents/GitHub/entr-clients-cloudfunctions"
 
 planned-auth() {
@@ -101,11 +100,6 @@ planned-auth() {
   else
     gcloud auth login || return 1
   fi
-}
-
-planned-up() {
-  planned-auth || return 1
-  ( cd "$PLANNED_REPO" && pnpm start:split )
 }
 
 # Codex: launch with the OpenCode theme matching the current macOS appearance.

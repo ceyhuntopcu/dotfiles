@@ -1,126 +1,159 @@
-# Global Instructions
+## Action policy
 
-These rules apply to **every session, every project, every mode, every model**. They override defaults but do not override explicit per-project `AGENTS.md` rules that contradict them.
+**Default to discussion, not action.** Do not write, edit, or create files
+unless the user's message contains an explicit action keyword:
 
-## 🔒 Git safety — never commit or push without explicit permission
+- Action words: "write", "do", "code", "apply", "fix", "create", "add",
+  "remove", "delete", "update", "change", "edit", "install", "run",
+  "execute", "move", "rename", "patch", "commit", "push", "go", "go ahead",
+  "yes", "proceed"
+- Skill invocations: `/commit`, `/push`, `/note`, `/todo`, `/vault`, `/pr`,
+  `/context` — these are always actionable.
+- Plan approval: "Execute the plan", "Start with:", numbered step references.
 
-**Forbidden unless I explicitly tell you to do so in the current turn:**
+If none of these are present, treat the request as **passive** — discuss,
+analyze, suggest, or ask clarifying questions. Propose a plan and wait for
+approval before touching any files.
 
-- `git commit` (and any variant: `--amend`, `-m`, `commit -a`, etc.)
-- `git push` (and any variant: `--force`, `-u`, tags, etc.)
-- `git tag` that creates a tag
-- `git merge` / `git rebase` that produces a commit
-- `git reset --hard` on anything that has commits I might lose
-- `git stash drop` / `stash clear`
-- Anything that rewrites history: `git filter-branch`, `git rebase -i`, `git reflog expire`, etc.
-- Force-deleting branches with unmerged work (`git branch -D`)
+When in doubt, ask:
+> "Want me to apply this, or just walk through the approach?"
 
-**Allowed freely (read-only / non-destructive):**
+## Decisions
 
-- `git status`, `git diff`, `git log`, `git show`, `git blame`, `git branch` (list), `git remote -v`
-- `git add` / `git restore` / `git checkout <file>` — staging is fine; just don't commit
-- Creating new branches (`git checkout -b`, `git branch <name>`) — branches are cheap and reversible
+Never guess on anything that changes scope, changes behavior, or is hard to
+reverse — stop and ask. Small, obviously-correct implementation choices
+(naming, formatting, which existing pattern to follow) don't need a check-in.
 
-**Explicit means explicit.** Phrases like "commit this", "push it", "make a PR" in *this* message count. A general goal like "fix the bug" does **not** authorize a commit at the end — finish, summarize what changed, and stop.
+## Communication style
 
-When in doubt, **stage the changes, summarize the diff, and ask before committing**.
+- Always lead with a TLDR — short, informative, to the point. Avoid long
+  explanations or big blocks of text.
+- Default to ≤6 short lines of prose. Skip recaps of what just happened.
+- Drop "Done." / "✓" / "Wired up." victory openings.
+- Don't narrate every step taken — show the result and only the steps that
+  mattered. Tool output is enough proof of work.
+- No "Want me to also…?" trailers unless the follow-up is genuinely the next
+  step (e.g. needing approval before a push). One brief offer max.
+- Bullet lists only when there are 3+ items. Tables only when there are
+  3+ rows **and** multiple columns of structured data.
+- Code blocks only for commands the user will run, configs to paste, or
+  diffs. Inline command names take backticks, not blocks.
+- Match the user's terseness: 5-word prompts get ≤5-line replies.
+- Yes/no questions: answer first.
+- Errors and gotchas: full detail. Routine successes: one line.
 
-## ✅ What to do instead of committing
+If the user prefixes their message with `?v `, ignore the brevity rules
+above and answer fully — that's the explicit verbose escape hatch.
 
-After making changes:
+## General Preferences
 
-1. Show me a summary of what files changed and why.
-2. Optionally `git add` the relevant files.
-3. Stop. Wait for my next instruction.
-4. If I say "commit it" — then write a conventional-commit message and commit.
-5. If I say "push" — then push.
+- If asked to do too much work at once, stop and state that clearly.
+- Never run my projects with `tilt up` or `pnpm run dev` or `bun run dev` or
+  similar. Always assume I have an existing process running and that I'm in
+  charge of it.
 
-## 🚫 Other destructive commands — same rule
+## Code Style
 
-Apply the same "ask first" principle to anything irreversible on shared state:
+- Always strive for concise, simple solutions.
+- If a problem can be solved in a simpler way, propose it.
 
-- `npm publish` / `pnpm publish` / `yarn publish` / `cargo publish`
-- `rm -rf` outside of `node_modules`, `dist`, `.next`, `build`, `target`, or other clearly-derived directories
-- Database migrations against non-local DBs
-- `kubectl apply`, `terraform apply`, `aws ...`, deployments
-- Sending emails / messages via APIs
-- Anything that costs money or affects other people
+## TypeScript
 
-Local-only destructive commands (e.g. `rm node_modules`, `docker system prune`) are fine.
+- Never use `any` unless 100% necessary or specifically instructed.
 
-## 💬 Communication style
+## External integrations — use executor, not per-harness MCP
 
-- Be concise. Skip preamble.
-- Show file paths clearly when discussing code.
-- When you finish a task, end with a short summary of what changed — not a victory lap.
+All external services go through **executor** (sandboxed TypeScript runtime
+with live saved connections), not each harness's native MCP config. Don't
+scatter the same integration across `~/.codex`, `~/.claude`, `~/.pi`, etc.
 
-## 🧵 Subagent delegation — divide and conquer automatically
+Installed: **linear**, **vercel**, **context7**, **chrome-devtools**.
 
-Proactively use `subagent_spawn` for this **without waiting for me to ask** whenever a task has multiple genuinely independent parts that can be explored/researched/reviewed separately — e.g. "understand how X's backend works" (split by layer: schema, API routes, services, frontend), "research these N libraries," "check what changed across these M unrelated modules."
+**Exception — GitHub:** its MCP server fails to connect through executor's
+remote client (HTTP 400 at the transport layer, tried both header-auth and a
+full OAuth App). Wired directly in each harness's own MCP config instead
+(`mcp-remote` + PAT) until/unless that's fixed.
 
-**Always pass `name` on every `subagent_spawn` call, formatted as `"<Role>: <slice>"`** — the role from the table below for whichever pattern applies, a colon, then a short 2-4 word descriptor of that specific subagent's slice of the task (e.g. `"Explorer: opening-module"`, `"Implementor: auth middleware"`). It's echoed back to you and shown in the UI ("Spawned subagent ... 'Explorer: opening-module' (pi: kimi-k2p7-code-fast, ...)"). Always lead with the exact role name from the table — never invent a different role — but always add the slice too, since spawning several of the same role concurrently with identical names makes them indistinguishable in the transcript.
+```ts
+const { items } = await tools.search({ query: "linear issues in progress", limit: 12 });
+const r = await tools[items[0].path]({ assignee: "me", state: "In Progress" });
+if (!r.ok) return r;   // { ok: false, error }
+return r.data;         // success payload
+```
 
-- Default harness: `pi`, model: Kimi 2.7 Code Fast (`fireworks/accounts/fireworks/routers/kimi-k2p7-code-fast`) — cheap and fast for exploration/research legwork. Only reach for the `claude`/`codex` harnesses when the task specifically calls for that model's judgment, not by default.
-- Give each subagent a fully self-contained prompt (exact paths/context it needs) — it cannot see this conversation.
-- Max 4 concurrent — if there are more independent parts than that, batch them.
-- Wait for all of them, then synthesize their findings into one coherent answer for me — don't just paste their raw output back.
-- Skip all of this for small/fast tasks (e.g. checking 2-3 small files) — spawning and waiting on subagents costs more than just doing it directly in a few seconds.
+- Find tools with `tools.search()`; don't guess paths.
+- Branch on `result.ok` after every tool call; helper functions must
+  preserve `{ ok: false, error }` results exactly and stop the workflow.
+- Do not report success for external writes until verified with a
+  read/inspect tool.
+- No `fetch` — all external calls go through `tools.*`.
 
-### Named roles and their default models
+### Playwright via executor
 
-**Also always pass `model` explicitly to the value in this table.** If you omit `model` on `subagent_spawn`, the subagent inherits *your own current model* — not the model the role is supposed to run on. This matters most for `Implementor`: if you're calling it while running as `low`/`medium` (Kimi 2.7 Code Fast), an omitted `model` silently gives you Kimi 2.7 Code Fast again instead of Kimi K3, defeating the point.
+Tools live at `tools.playwright.user.playwright.*`. Registered with
+`--headless` so no browser window pops open.
 
-| Name (pass as `name`) | When to use it | Default model |
-|---|---|---|
-| `Explorer` | The general case above — any independent-parts task with no more specific pattern below | Kimi 2.7 Code Fast |
-| `Reviewer` | PR/diff review — one per changed file or package | Kimi 2.7 Code Fast |
-| `Researcher` | Cross-package research — one per package | Kimi 2.7 Code Fast |
-| `Debugger` | Debugging with multiple hypotheses — one per hypothesis | Kimi 2.7 Code Fast |
-| `Impact-Checker` | Refactor blast-radius check — one per call-site/consumer group | Kimi 2.7 Code Fast |
-| `Lib-Researcher` | Researching external libraries — one per library | Kimi 2.7 Code Fast |
-| `Implementor` | Implementation handoff (see below) | Kimi K3 (`fireworks/accounts/fireworks/models/kimi-k3`) |
-| `Verifier` | Cross-model verification (see below) | Whichever model family the rule below picks |
+**Gotcha:** the browser context does NOT persist between separate tool calls.
+Each call spawns a fresh browser, so `browser_navigate` in one call +
+`browser_take_screenshot` in the next yields a blank `about:blank` shot. This
+is amplified by executor's approval-pausing (each pause resets the session).
 
-- **PR/diff review** (`Reviewer`): for a review covering multiple changed files or packages, spawn one per file/package to flag issues in its slice, then synthesize into one review — don't review a large diff top-to-bottom yourself.
-- **Cross-package research** (`Researcher`): when a question spans multiple packages (e.g. `packages/db` + `packages/schemas` + `apps/web`), split exploration by package instead of reading across all of them yourself.
-- **Debugging with multiple hypotheses** (`Debugger`): when a bug has 2+ plausible root causes, spawn one per hypothesis to investigate and rule in/out in parallel, rather than chasing one theory at a time.
-- **Refactor blast-radius check** (`Impact-Checker`): before a large rename/API/schema change, spawn subagents to check different call-sites/consumers across the codebase for what would break.
-- **Researching external libraries** (`Lib-Researcher`): when comparing/evaluating multiple unrelated libraries or dependencies, spawn one per library.
+**Working pattern:** do navigate + act + screenshot inside ONE
+`browser_run_code_unsafe` call. Its `code` arg must be an **async arrow fn
+taking `page`**:
 
-### Implementation handoff — plan yourself, implement on Kimi K3 (`Implementor`)
+```ts
+await tools.playwright.user.playwright.browser_run_code_unsafe({
+  code: `async (page) => {
+    await page.goto('http://localhost:8228');
+    await page.waitForTimeout(1500);
+    await page.screenshot({ path: 'shot.png', fullPage: true, type: 'png' });
+    return { url: page.url(), title: await page.title() };
+  }`
+});
+```
 
-When you're running as a high-capability/high-cost model (`high-gpt`, `high-opus`, or `ultra` mode — GPT-5.6 Sol, Claude Opus, or Claude Fable), your job in that mode is planning, investigation, and review — not hand-writing the implementation yourself. Once you have a concrete, fully-scoped plan (exact files, exact changes, how to verify), hand the actual code-writing off to a `subagent_spawn` call named `Implementor` using Kimi K3 (`fireworks/accounts/fireworks/models/kimi-k3`), then review what it produced before treating it as done.
+- Screenshots can only write inside the MCP server's allowed root
+  (`~/.executor/`); copy out to the desired location with `cp` afterward.
+- To reconfigure the server (e.g. add a flag), remove via
+  `DELETE /api/integrations/<slug>` (bearer token in
+  `~/.executor/server-control/auth.json`), then
+  `executor call executor mcp addServer` + `coreTools connections.create`
+  again.
 
-- Give it the plan, not just the task — exact files/functions to touch, the precise change, and how to verify (tests/build/lint to run). It cannot see this conversation.
-- This is separate from the default Kimi 2.7 Code Fast used for research/exploration/review splitting above — Kimi K3 here is specifically for writing real implementation code from a plan you already made.
-- Skip this for small/fast edits (a few lines, one file) — plan-then-handoff overhead isn't worth it below that.
-- If Kimi K3's output doesn't match the plan, fix it yourself or send it back with specific feedback — don't silently accept a wrong implementation.
+## Git usage
 
-### Cross-model verification (`Verifier`)
+- NEVER commit unless explicitly told to, for that specific commit.
+- NEVER push unless explicitly told to, for that specific push.
+- Running `/commit`/`/push` (or saying "commit"/"push"/"go ahead") is the
+  explicit approval for that one action only — it does not carry forward.
+  Ask again next time, even if I approved a commit/push earlier in this same
+  session.
 
-After finishing significant work (a real implementation, a design decision, anything security- or correctness-sensitive — not small edits), spawn **one verification subagent, named `Verifier`, using a different model family than whatever did the primary work**, and have it critique/check the result before treating it as final:
+### Commits — Conventional Commits
 
-- Primary work was done by Claude (Fable, via `claude` harness or `anthropic` provider) → verify with the `codex` harness (GPT).
-- Primary work was done by GPT/Codex (`codex` harness or `openai-codex` provider) → verify with the `claude` harness (Fable).
-- Primary work was done by anything else (Kimi, GLM, DeepSeek via Fireworks) → verify with either the `claude` or `codex` harness — pick one.
+Use [Conventional Commits](https://www.conventionalcommits.org/):
 
-Verification only needs read/grep/bash, not your full project settings and MCP servers — always pass `restrict_settings: true` and `reasoning_effort: "medium"` on this call. Neither weakens the check itself (still a genuinely different model family reading the real diff); they just cut startup and thinking overhead that a quick verification pass doesn't need.
+```
+<type>[scope]: <description>
+```
 
-Report the verifier's findings to me plainly — don't silently "fix" disagreements yourself. If the verifier flags something, tell me what it flagged and what you did about it.
+- Types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`
+- Imperative mood, lowercase, no trailing period, ≤50 chars for the subject.
+- Scope is optional and lowercase (`fix(auth): ...`).
+- **No body 95% of the time.** Only add a body for large/complex changes.
+- Breaking: `feat!:` or add a `BREAKING CHANGE:` footer.
+- NEVER COMMIT AS THE CO-AUTHOR. I WANT TO BE THE SOLE COMMITTER
 
-## 🧠 Persistent memory
+### Branch
 
-This section is your long-term memory — it is loaded into your context every session. Use it so I don't have to repeat myself across sessions.
+- Prefer using the Linear's issue id and a small description when in context (e.g: sta-2341/fix-ui-jittering)
+- If no Linear issue is in context, use [Conventional Branch](https://conventionalbranch.org/#summary)
 
-- **When you learn something durable** about me, my preferences, my projects, my tools, or how I like to work, append it as a concise bullet under "Remembered facts" (one fact per line). Do this proactively when I state a preference or correct you — you don't need to ask permission to remember.
-- **Act on these facts automatically** — they're already in your context at the start of every session; don't wait to be reminded.
-- **Keep it curated, not a log**: edit or delete bullets that become outdated or wrong. Only durable, cross-session facts belong here — never one-off task details.
-- This file is version-controlled, so your edits persist and are safe.
+### Pull Request - PR
 
-### Remembered facts
-
-- My name is Ceyhun (ceyhun@planned.com); I work on **Planned**, an event-management platform in a pnpm monorepo.
-- My CLI stack: **Claude Code** is my batteries-included daily driver; **Pi** is my tool for **Kimi** (fast/cheap model via Fireworks).
-- Kimi K3 implementation handoffs through Fireworks are fixed and should be used normally again.
-- <!-- append new facts below this line -->
-
+- NEVER overwrite the description of an existing PR
+- NEVER include Test/Verification or anything similar to that. Assume the CI/CD will always verify it.
+- Keep the description concise and to the point.
+  - Explain why the change is a product requirement.
+  - Give a high level overview of the changes using ASCII diagrams.

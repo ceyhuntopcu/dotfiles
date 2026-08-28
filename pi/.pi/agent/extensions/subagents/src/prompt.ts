@@ -2,15 +2,16 @@
 
 /** Describes subagent_spawn, including harnesses and the fixed concurrency cap. */
 export const SUBAGENT_SPAWN_TOOL_DESCRIPTION =
-  "Spawn a background subagent: a fully autonomous, headless agent with its own context window. You choose the harness it runs on: pi (in-process pi session, inherits this environment's tools and config), claude (Claude Code), or codex (Codex CLI). Fire-and-forget: this returns immediately with an id. The subagent's final output is queued back to you as a message when it settles, or collect it explicitly with subagent_wait. Children cannot orchestrate more agents/workflows or ask the user, and cannot see this conversation, so the prompt must be self-contained. Max 4 subagents can be running at once across all harnesses.";
+  "Spawn a background subagent: a fully autonomous, headless agent with its own context window and the selected harness's normal host permissions. Delegation trades away this conversation's context for parallelism and isolation, so reserve it for tasks that genuinely benefit — most work is faster done directly. You choose the harness it runs on: pi (in-process pi session, inherits this environment's tools and config), claude (Claude Code), or codex (Codex CLI). Fire-and-forget: this returns immediately with an id. The subagent's final output is queued back to you as a message when it settles, or collect it explicitly with subagent_wait. Children cannot orchestrate more agents/workflows or ask the user, and cannot see this conversation, so the prompt must be self-contained. Only use trusted working directories. Max 4 subagents can be running at once across all harnesses.";
 
 /** Adds background subagent delegation to the parent model's available-tools prompt. */
 export const SUBAGENT_SPAWN_PROMPT_SNIPPET =
-  "Spawn a background subagent on a chosen harness (pi, Claude Code, or Codex; own context, normal tools) for a self-contained task";
+  "Spawn a background subagent on a chosen harness (pi, Claude Code, or Codex; own context, normal tools) for a self-contained task worth delegating";
 
-/** Guides the parent model to delegate standalone tasks and avoid unnecessary blocking waits. */
+/** Guides the parent model to delegate sparingly and avoid unnecessary blocking waits. */
 export const SUBAGENT_SPAWN_PROMPT_GUIDELINES = [
-  "Use subagent_spawn to delegate self-contained tasks that can run in the background; give it a complete, standalone prompt.",
+  "Default to doing the work yourself. Use subagent_spawn only when delegation clearly pays off: the task can run in parallel with your own work, it is long-running, or it would flood your context with output you only need summarized.",
+  "Do not spawn a subagent for quick tasks you can finish in a few tool calls yourself — reading a file, a focused edit, running one command. Spawning adds latency, and the child cannot see this conversation, so its prompt must be self-contained: include all needed context, file paths, and what to report back.",
   "Pick the subagent harness deliberately: pi unless you have a reason to prefer Claude Code or Codex (e.g. the user asked for one, or the task suits that harness).",
   "After subagent_spawn, keep working; results arrive automatically. Only call subagent_wait when you cannot proceed without the result.",
 ];
@@ -22,13 +23,12 @@ export const SUBAGENT_SPAWN_PARAMETER_DESCRIPTIONS = {
   name: "Short human-readable name for this subagent, shown in listings and the UI",
   harness:
     'Harness to run the subagent on: "pi" (in-process pi session; inherits this environment), "claude" (Claude Code), or "codex" (Codex CLI). Choose deliberately per task.',
-  workingDir: "Working directory (default: current working directory)",
+  workingDir:
+    "Trusted working directory for the autonomous child (default: current working directory)",
   model:
     'Model hint, interpreted by the chosen harness (pi: "provider/model-id" or model id; claude: model alias like "sonnet"/"opus"; codex: model slug). Omit for the harness default (pi inherits the current model).',
   reasoningEffort:
     "Reasoning effort on a shared scale; the harness maps it to its nearest native equivalent (pi thinking level, codex reasoning effort, claude thinking budget). Omit for the harness default (pi inherits the current level).",
-  restrictSettings:
-    "Skip loading project-level settings and MCP servers for tasks that only need read/grep/bash-style tools (e.g. code review or verification). Currently only honored by the claude harness. Default false.",
 };
 
 /** Builds the subagent_spawn result that tells the parent model how to continue or inspect the child. */

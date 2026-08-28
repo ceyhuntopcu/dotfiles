@@ -25,8 +25,10 @@ import * as path from "node:path";
 import { StringEnum } from "@earendil-works/pi-ai";
 import type {
   ExtensionAPI,
+  ExtensionCommandContext,
   ExtensionContext,
   ExtensionUIContext,
+  ToolDefinition,
 } from "@earendil-works/pi-coding-agent";
 import {
   DEFAULT_MAX_BYTES,
@@ -38,7 +40,8 @@ import {
   truncateHead,
 } from "@earendil-works/pi-coding-agent";
 import { Markdown, Text } from "@earendil-works/pi-tui";
-import { Type } from "typebox";
+import { Type, type TSchema } from "typebox";
+import { deriveBtwTitle, isModelVisible } from "./src/by-the-way.ts";
 import {
   BACKEND_NAMES,
   formatElapsed,
@@ -72,11 +75,21 @@ import {
   runTool,
   type SubagentRuntime,
 } from "./src/runtime.ts";
-import { openSubagentPicker } from "./src/ui/takeover.ts";
+import { openSubagentPicker, openSubagentTakeover } from "./src/ui/takeover.ts";
 
 const SUBAGENT_OUTPUT_MAX_BYTES = 24 * 1024;
 const WAIT_OUTPUT_MAX_BYTES = 48 * 1024;
 const WAIT_PER_AGENT_MAX_BYTES = 16 * 1024;
+
+interface BtwResultData {
+  readonly id: string;
+  readonly title: string;
+  readonly status: SubagentSnapshot["status"];
+  readonly errorText?: string;
+  readonly prompt: string;
+  readonly answer: string;
+  readonly sessionFilePath?: string;
+}
 
 function describeSubagent(snap: SubagentSnapshot) {
   const details = [
@@ -126,6 +139,28 @@ function resolveChildProjectTrust(options: {
 }
 
 export default function (pi: ExtensionAPI) {
+  const retryDecorations: Array<() => void> = [];
+  const registerTool = <TParams extends TSchema, TDetails = unknown, TState = unknown>(
+    tool: ToolDefinition<TParams, TDetails, TState>,
+  ) => {
+    const decorate = () => {
+      const request: { version: 1; tool: ToolDefinition<TParams, TDetails, TState>; decorated?: boolean } = {
+        version: 1,
+        tool,
+      };
+      pi.events?.emit("pi-tidy-tools:decorate-tool", request);
+      return request;
+    };
+    const request = decorate();
+    pi.registerTool(request.tool);
+    if (!request.decorated) {
+      retryDecorations.push(() => {
+        const retry = decorate();
+        if (retry.decorated) pi.registerTool(retry.tool);
+      });
+    }
+  };
+
   let runtime: SubagentRuntime | undefined;
   let managerPromise: Promise<SubagentManagerShape> | undefined;
   let sessionContext: ExtensionContext | undefined;
@@ -187,7 +222,35 @@ export default function (pi: ExtensionAPI) {
     for (const snap of resultDelivery.drain()) deliverResult(snap);
   };
 
+  const deliverBtwResult = (snap: SubagentSnapshot) => {
+    // appendEntry is a synchronous SessionManager operation and emits an
+    // entry_appended event, so it is safe while the parent is streaming and
+    // never enters the model's context or follow-up queue.
+    pi.appendEntry<BtwResultData>("btw-result", {
+      id: snap.id,
+      title: snap.title,
+      status: snap.status,
+      errorText: snap.errorText,
+      prompt: snap.prompt,
+      answer: truncatedOutput(snap),
+      sessionFilePath: snap.meta.sessionFilePath,
+    });
+    ui?.notify(
+      snap.status === "error"
+        ? `by the way “${snap.title}” failed — reopen it with /subagents`
+        : `by the way “${snap.title}” answered — reopen it with /subagents`,
+      snap.status === "error" ? "error" : "info",
+    );
+  };
+
   const onSettled = (snap: SubagentSnapshot, consumed: boolean) => {
+    // A shutdown can settle children while disposing their scopes. Never
+    // append into a session whose extension runtime is already closing.
+    if (!sessionContext) return;
+    if (snap.origin === "btw") {
+      deliverBtwResult({ ...snap, meta: { ...snap.meta } });
+      return;
+    }
     if (consumed) {
       resultDelivery.consume([snap.id]);
       return;
@@ -201,6 +264,7 @@ export default function (pi: ExtensionAPI) {
   };
 
   pi.on("session_start", (_event, ctx) => {
+    for (const retry of retryDecorations.splice(0)) retry();
     sessionContext = ctx;
     if (ctx.hasUI) ui = ctx.ui;
   });
@@ -213,6 +277,7 @@ export default function (pi: ExtensionAPI) {
     unsubStatus?.();
     unsubStatus = undefined;
     ui?.setStatus("subagents", undefined);
+    ui = undefined;
     const closing = runtime;
     runtime = undefined;
     managerPromise = undefined;
@@ -223,7 +288,7 @@ export default function (pi: ExtensionAPI) {
 
   // --- Tools -------------------------------------------------------------
 
-  pi.registerTool({
+  registerTool({
     name: "subagent_spawn",
     label: "Spawn Subagent",
     description: SUBAGENT_SPAWN_TOOL_DESCRIPTION,
@@ -254,13 +319,8 @@ export default function (pi: ExtensionAPI) {
           description: SUBAGENT_SPAWN_PARAMETER_DESCRIPTIONS.reasoningEffort,
         }),
       ),
-      restrict_settings: Type.Optional(
-        Type.Boolean({
-          description: SUBAGENT_SPAWN_PARAMETER_DESCRIPTIONS.restrictSettings,
-        }),
-      ),
     }),
-    async execute(_toolCallId, params, _signal, _onUpdate, ctx) {
+    async execute(_toolCallId, params, signal, _onUpdate, ctx) {
       const manager = await getManager();
       const harness = params.harness;
 
@@ -278,7 +338,6 @@ export default function (pi: ExtensionAPI) {
           cwd,
           model: params.model,
           reasoningEffort: params.reasoning_effort,
-          restrictSettings: params.restrict_settings,
           parent: {
             parentCwd: ctx.cwd,
             projectTrusted: resolveChildProjectTrust({
@@ -293,6 +352,7 @@ export default function (pi: ExtensionAPI) {
             modelRegistry: ctx.modelRegistry,
           },
         }),
+        { signal, interruptMessage: "Subagent spawn aborted." },
       );
 
       return {
@@ -319,7 +379,7 @@ export default function (pi: ExtensionAPI) {
     },
   });
 
-  pi.registerTool({
+  registerTool({
     name: "subagent_wait",
     label: "Wait for Subagents",
     description: SUBAGENT_WAIT_TOOL_DESCRIPTION,
@@ -334,8 +394,14 @@ export default function (pi: ExtensionAPI) {
       const ids = [...new Set(params.ids)];
       if (ids.length === 0)
         throw new Error("Provide at least one subagent id.");
-      const known = manager.view.list().map((snap) => snap.id);
-      const unknown = ids.filter((id) => !manager.view.get(id));
+      const known = manager.view
+        .list()
+        .filter(isModelVisible)
+        .map((snap) => snap.id);
+      const unknown = ids.filter((id) => {
+        const snap = manager.view.get(id);
+        return !snap || !isModelVisible(snap);
+      });
       if (unknown.length > 0) {
         throw new Error(
           `Unknown subagent id(s): ${unknown.join(", ")}. Known: ${known.join(", ") || "none"}.`,
@@ -407,7 +473,7 @@ export default function (pi: ExtensionAPI) {
     },
   });
 
-  pi.registerTool({
+  registerTool({
     name: "subagent_cancel",
     label: "Cancel Subagents",
     description: SUBAGENT_CANCEL_TOOL_DESCRIPTION,
@@ -416,21 +482,30 @@ export default function (pi: ExtensionAPI) {
         description: SUBAGENT_CANCEL_PARAMETER_DESCRIPTIONS.ids,
       }),
     }),
-    async execute(_toolCallId, params) {
+    async execute(_toolCallId, params, signal) {
       const manager = await getManager();
       const ids = [...new Set(params.ids)];
       if (ids.length === 0)
         throw new Error("Provide at least one subagent id.");
 
-      const known = manager.view.list().map((snap) => snap.id);
-      const unknown = ids.filter((id) => !manager.view.get(id));
+      const known = manager.view
+        .list()
+        .filter(isModelVisible)
+        .map((snap) => snap.id);
+      const unknown = ids.filter((id) => {
+        const snap = manager.view.get(id);
+        return !snap || !isModelVisible(snap);
+      });
       if (unknown.length > 0) {
         throw new Error(
           `Unknown subagent id(s): ${unknown.join(", ")}. Known: ${known.join(", ") || "none"}.`,
         );
       }
 
-      const report = await runTool(getRuntime(), manager.cancel(ids));
+      const report = await runTool(getRuntime(), manager.cancel(ids), {
+        signal,
+        interruptMessage: "Subagent cancellation aborted.",
+      });
 
       const lines = report.map((entry) =>
         entry.cancelled
@@ -451,7 +526,7 @@ export default function (pi: ExtensionAPI) {
     },
   });
 
-  pi.registerTool({
+  registerTool({
     name: "subagent_check",
     label: "Check Subagent",
     description: SUBAGENT_CHECK_TOOL_DESCRIPTION,
@@ -463,8 +538,11 @@ export default function (pi: ExtensionAPI) {
     async execute(_toolCallId, params) {
       const manager = await getManager();
       const snap = manager.view.get(params.id);
-      if (!snap) {
-        const known = manager.view.list().map((s) => s.id);
+      if (!snap || !isModelVisible(snap)) {
+        const known = manager.view
+          .list()
+          .filter(isModelVisible)
+          .map((s) => s.id);
         throw new Error(
           `Unknown subagent id "${params.id}". Known: ${known.join(", ") || "none"}.`,
         );
@@ -489,14 +567,14 @@ export default function (pi: ExtensionAPI) {
     },
   });
 
-  pi.registerTool({
+  registerTool({
     name: "subagent_list",
     label: "List Subagents",
     description: SUBAGENT_LIST_TOOL_DESCRIPTION,
     parameters: Type.Object({}),
     async execute() {
       const manager = await getManager();
-      const subs = manager.view.list();
+      const subs = manager.view.list().filter(isModelVisible);
       const text =
         subs.length === 0
           ? "No subagents."
@@ -566,7 +644,106 @@ export default function (pi: ExtensionAPI) {
     },
   );
 
-  // --- Command ------------------------------------------------------------
+  pi.registerEntryRenderer<BtwResultData>(
+    "btw-result",
+    (entry, { expanded }, theme) => {
+      const data = entry.data;
+      const failed = data?.status === "error";
+      const icon = failed ? theme.fg("error", "x") : theme.fg("success", "■");
+      const header =
+        `${icon} ` +
+        theme.fg("accent", theme.bold(`by the way · ${data?.title ?? "?"}`)) +
+        theme.fg(
+          "muted",
+          ` · ${failed ? "failed" : "answered"} · ${data?.id ?? "?"}`,
+        );
+      const body = [
+        data?.errorText ? `Error: ${data.errorText}` : "",
+        data?.answer ?? "(no answer)",
+      ]
+        .filter(Boolean)
+        .join("\n\n");
+
+      if (expanded) {
+        const md = new Markdown(body, 0, 0, getMarkdownTheme());
+        const container = new Text(header, 0, 0);
+        return {
+          render: (width: number) => [
+            ...container.render(width),
+            ...md.render(width),
+          ],
+          invalidate: () => {
+            container.invalidate();
+            md.invalidate();
+          },
+        };
+      }
+
+      const lines = body.split("\n");
+      let text = header;
+      for (const line of lines.slice(0, 8))
+        text += `\n${theme.fg("toolOutput", line)}`;
+      if (lines.length > 8)
+        text += `\n${theme.fg("dim", "... (ctrl+o to expand)")}`;
+      return new Text(text, 0, 0);
+    },
+  );
+
+  // --- Commands -----------------------------------------------------------
+
+  const runByTheWay = async (rawArgs: string, ctx: ExtensionCommandContext) => {
+    if (ctx.mode !== "tui") {
+      if (ctx.hasUI)
+        ctx.ui.notify("by the way is only available in the TUI", "error");
+      return;
+    }
+
+    let prompt = rawArgs.trim();
+    if (!prompt) {
+      const input = await ctx.ui.input("by the way", "Ask a one-off question…");
+      prompt = input?.trim() ?? "";
+      if (!prompt) return;
+    }
+
+    const manager = await getManager();
+    let snap: SubagentSnapshot;
+    try {
+      snap = await runTool(
+        getRuntime(),
+        manager.spawn("pi", {
+          origin: "btw",
+          prompt,
+          title: deriveBtwTitle(prompt),
+          cwd: ctx.cwd,
+          parent: {
+            parentCwd: ctx.cwd,
+            projectTrusted: ctx.isProjectTrusted(),
+            inheritedModel: ctx.model
+              ? { provider: ctx.model.provider, id: ctx.model.id }
+              : undefined,
+            inheritedThinkingLevel: pi.getThinkingLevel(),
+            modelRegistry: ctx.modelRegistry,
+          },
+        }),
+      );
+    } catch (error) {
+      ctx.ui.notify(
+        error instanceof Error ? error.message : String(error),
+        "error",
+      );
+      return;
+    }
+
+    await openSubagentTakeover(ctx, manager.view, snap.id, {
+      badge: "by the way",
+    });
+  };
+
+  pi.registerCommand("btw", {
+    description:
+      "Ask a one-off side question while the main agent keeps working",
+    handler: runByTheWay,
+  });
 
   pi.registerCommand("subagents", {
     description: "List, inspect, and take over subagents",

@@ -1,37 +1,20 @@
 {
-  "lastChangelogVersion": "0.82.1",
-  "theme": {
-    "light": "one-light-pro",
-    "dark": "one-dark-pro"
-  },
-  "defaultProvider": "openai-codex",
-  "defaultModel": "gpt-5.6-sol",
-  "defaultThinkingLevel": "high",
+  "lastChangelogVersion": "0.84.3",
+  "theme": "opencode_light/opencode_dark",
   "packages": [
-    "git:github.com/nicobailon/pi-mcp-adapter",
-    "npm:@gotgenes/pi-anthropic-auth",
-    "npm:pi-otty",
-    "npm:@mobrienv/pi-tidy-tools"
+    "git:github.com/paoloanzn/pi-black"
   ],
-  "providers": {
-    "openai-codex": {
-      "modelOverrides": {
-        "gpt-5.6-sol": {
-          "contextWindow": 1050000
-        },
-        "gpt-5.6-terra": {
-          "contextWindow": 1050000
-        }
-      }
-    }
-  },
-  "editorPaddingX": 0,
-  "quietStartup": true,
-  "collapseChangelog": true,
-  "enableInstallTelemetry": false,
-  "compaction": {
-    "enabled": true
-  },
+  "enabledModels": [
+    "anthropic/claude-fable-5",
+    "anthropic/claude-opus-5",
+    "anthropic/claude-sonnet-5",
+    "openai-codex/gpt-5.6-sol",
+    "openai-codex/gpt-5.6-terra",
+    "fireworks/accounts/fireworks/models/kimi-k3",
+    "fireworks/accounts/fireworks/models/deepseek-v4-flash-0731"
+  ],
   "hideThinkingBlock": false,
-  "clearOnStart": true
+  "warnings": {
+    "anthropicExtraUsage": false
+  }
 }

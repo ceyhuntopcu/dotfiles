@@ -1,0 +1,35 @@
+{
+  "providers": {
+    "openai-codex": {
+      "modelOverrides": {
+        "gpt-5.6-sol": {
+          "contextWindow": 1000000
+        },
+        "gpt-5.6-terra": {
+          "contextWindow": 1000000
+        }
+      }
+    },
+    "fireworks": {
+      "api": "openai-completions",
+      "apiKey": "$FIREWORKS_API_KEY",
+      "models": [
+        {
+          "id": "accounts/fireworks/models/kimi-k3",
+          "name": "Kimi K3 (Fireworks)",
+          "baseUrl": "https://api.fireworks.ai/inference/v1",
+          "reasoning": true,
+          "input": ["text", "image"],
+          "contextWindow": 262144,
+          "maxTokens": 32768,
+          "cost": {
+            "input": 3,
+            "output": 15,
+            "cacheRead": 0.3,
+            "cacheWrite": 0
+          }
+        }
+      ]
+    }
+  }
+}
