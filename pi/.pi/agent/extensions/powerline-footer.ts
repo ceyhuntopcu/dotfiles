@@ -85,10 +85,10 @@ class PowerlineFooter implements Component {
 
         const segments: Array<{ text: string; bg: ThemeBgKey; fg: ThemeColor }> = [
             { text: ` ${branchLabel} `, bg: "selectedBg", fg: "text" },
-            { text: ` ↑${formatTokens(usage.input)} `, bg: "userMessageBg", fg: "text" },
-            { text: ` ↓${formatTokens(usage.output)} `, bg: "userMessageBg", fg: "text" },
-            { text: ` $${usage.cost.toFixed(3)} `, bg: "userMessageBg", fg: "text" },
-            { text: ` ${contextPercentText}/${formatTokens(contextWindow)} `, bg: "userMessageBg", fg: "text" },
+            { text: ` ↑${formatTokens(usage.input)} `, bg: "selectedBg", fg: "text" },
+            { text: ` ↓${formatTokens(usage.output)} `, bg: "selectedBg", fg: "text" },
+            { text: ` $${usage.cost.toFixed(3)} `, bg: "selectedBg", fg: "text" },
+            { text: ` ${contextPercentText}/${formatTokens(contextWindow)} `, bg: "selectedBg", fg: "text" },
         ];
 
         const rendered = segments.map((s) => theme.bg(s.bg, theme.fg(s.fg, s.text)));
