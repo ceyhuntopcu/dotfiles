@@ -13,11 +13,6 @@
 			"modelId": "claude-opus-5",
 			"thinkingLevel": "high"
 		},
-		"Sonnet": {
-			"provider": "anthropic",
-			"modelId": "claude-sonnet-5",
-			"thinkingLevel": "medium"
-		},
 		"Sol": {
 			"provider": "openai-codex",
 			"modelId": "gpt-5.6-sol",
@@ -27,11 +22,6 @@
 			"provider": "openai-codex",
 			"modelId": "gpt-5.6-terra",
 			"thinkingLevel": "medium"
-		},
-		"Kimi": {
-			"provider": "fireworks",
-			"modelId": "accounts/fireworks/models/kimi-k3",
-			"thinkingLevel": "high"
 		},
 		"DeepSeek": {
 			"provider": "fireworks",
