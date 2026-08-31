@@ -1,16 +1,16 @@
 {
   "lastChangelogVersion": "0.84.3",
+  "editorPaddingX": 2,
   "theme": "opencode_light/opencode_dark",
   "packages": [
-    "git:github.com/paoloanzn/pi-black"
+    "git:github.com/paoloanzn/pi-black",
+    "/Users/ceyhuntopcu/.pi/agent/extensions/clean-tools"
   ],
   "enabledModels": [
     "anthropic/claude-fable-5",
     "anthropic/claude-opus-5",
-    "anthropic/claude-sonnet-5",
     "openai-codex/gpt-5.6-sol",
     "openai-codex/gpt-5.6-terra",
-    "fireworks/accounts/fireworks/models/kimi-k3",
     "fireworks/accounts/fireworks/models/deepseek-v4-flash-0731"
   ],
   "hideThinkingBlock": false,
