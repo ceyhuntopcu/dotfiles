@@ -60,17 +60,57 @@ export function formatContext(percent: number | null | undefined, contextWindow:
 }
 
 /**
- * `880k left · 12%` — headline is the budget still available, because "how much
- * room is left" is the question the strip is actually asked. An overrun clamps
- * to `0 left · 100%` instead of reporting a negative remainder.
+ * Context budget headline. At 60% the regular remaining-budget text gains a
+ * warning marker; at 85% it collapses to the critical percentage so it stays
+ * visible even when the rest of the chrome is crowded.
  */
 export function formatContextRemaining(percent: number | null | undefined, contextWindow: number): string {
     const known = percent != null && Number.isFinite(percent);
     const clamped = known ? Math.min(100, Math.max(0, percent as number)) : 0;
+    const roundedPercent = Math.round(clamped);
+    if (known && clamped >= 85) return `⚠ ${roundedPercent}%`;
+
     const remaining = Math.max(0, Math.round(contextWindow * (1 - clamped / 100)));
     const remainingText = remaining === 0 ? "0" : formatTokens(remaining);
-    const percentText = known ? `${Math.round(clamped)}%` : "?%";
-    return `${remainingText} left${SEPARATOR}${percentText}`;
+    const percentText = known ? `${roundedPercent}%` : "?%";
+    const warning = known && clamped >= 60 ? "⚠ " : "";
+    return `${warning}${remainingText} left${SEPARATOR}${percentText}`;
+}
+
+export interface SubagentBadgeCounts {
+    running: number;
+    done: number;
+    failed: number;
+}
+
+export interface StatusBadgeInputs {
+    dirtyFiles?: number;
+    subagents?: SubagentBadgeCounts;
+    diffFiles?: number;
+}
+
+function badgeCount(value: number | undefined): number {
+    return value !== undefined && Number.isFinite(value) ? Math.max(0, Math.trunc(value)) : 0;
+}
+
+/** Compact operational badges, ordered to sit immediately after the branch. */
+export function formatStatusBadges(input: StatusBadgeInputs): string | undefined {
+    const badges: string[] = [];
+    const dirtyFiles = badgeCount(input.dirtyFiles);
+    if (dirtyFiles > 0) badges.push(`±${dirtyFiles}`);
+
+    const subagentParts: string[] = [];
+    const running = badgeCount(input.subagents?.running);
+    const done = badgeCount(input.subagents?.done);
+    const failed = badgeCount(input.subagents?.failed);
+    if (running > 0) subagentParts.push(`◉${running}`);
+    if (done > 0) subagentParts.push(`✓${done}`);
+    if (failed > 0) subagentParts.push(`×${failed}`);
+    if (subagentParts.length > 0) badges.push(subagentParts.join("·"));
+
+    const diffFiles = badgeCount(input.diffFiles);
+    if (diffFiles > 0) badges.push(`Δ${diffFiles}`);
+    return badges.length > 0 ? badges.join(" ") : undefined;
 }
 
 export interface GaugePaint {
@@ -112,13 +152,14 @@ export function formatModelLabel(
 }
 
 /** Segment identities handed to the caller's paint callback, left to right. */
-export type ChromeSegment = "brand" | "model" | "path" | "branch" | "context" | "fill";
+export type ChromeSegment = "brand" | "model" | "path" | "branch" | "badges" | "context" | "fill";
 
 export interface StatusLineParts {
     brand?: string;
     model: string;
     path?: string;
     branch?: string;
+    badges?: string;
     context?: string;
 }
 
@@ -139,11 +180,12 @@ export interface StatusLineOptions {
 }
 
 /**
- * Compose one full-width status line: `brand · model · path · branch` on the
- * left, the context text right-aligned, and the gap between them either padded,
- * ruled, or rendered as a gauge. Under pressure the layout degrades in a fixed
- * order — shorten the path, drop the branch, drop the path, drop the context —
- * so the operationally important budget outlives the repository label.
+ * Compose one full-width status line: `brand · model · path · branch · badges`
+ * on the left, the context text right-aligned, and the gap between them either
+ * padded, ruled, or rendered as a gauge. Under pressure the layout degrades in
+ * a fixed order — shorten/drop the path, drop the branch, drop the badges, then
+ * drop the context — so the operationally important budget outlives repository
+ * detail.
  */
 export function composeStatusLine(parts: StatusLineParts, width: number, options?: StatusLineOptions): string {
     if (width <= 0) return "";
@@ -154,13 +196,15 @@ export function composeStatusLine(parts: StatusLineParts, width: number, options
     const brand = parts.brand?.trim() || undefined;
     const model = parts.model.trim();
     const originalPath = parts.path?.trim() || undefined;
+    const originalBadges = parts.badges?.trim() || undefined;
 
     let pathText = originalPath;
     let branch = parts.branch?.trim() || undefined;
     let context = parts.context?.trim() || undefined;
+    let badges = originalBadges;
 
     const leftWidth = () => {
-        const segments = [brand, model, pathText, branch].filter(Boolean) as string[];
+        const segments = [brand, model, pathText, branch, badges].filter(Boolean) as string[];
         return segments.reduce((total, segment, index) => total + plainWidth(segment) + (index > 0 ? plainWidth(separator) : 0), 0);
     };
     const rightWidth = () => {
@@ -178,11 +222,13 @@ export function composeStatusLine(parts: StatusLineParts, width: number, options
     const degradations: Array<() => void> = [
         () => shrinkPath(),
         () => {
-            branch = undefined;
-            shrinkPath();
+            pathText = undefined;
         },
         () => {
-            pathText = undefined;
+            branch = undefined;
+        },
+        () => {
+            badges = undefined;
         },
         () => {
             context = undefined;
@@ -199,6 +245,7 @@ export function composeStatusLine(parts: StatusLineParts, width: number, options
     leftSegments.push({ segment: "model", text: model });
     if (pathText) leftSegments.push({ segment: "path", text: pathText });
     if (branch) leftSegments.push({ segment: "branch", text: branch });
+    if (badges) leftSegments.push({ segment: "badges", text: badges });
 
     const rightSegments: Array<{ segment: ChromeSegment; text: string }> = [];
     if (context) rightSegments.push({ segment: "context", text: context });

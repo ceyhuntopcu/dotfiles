@@ -1,6 +1,7 @@
 {
   "lastChangelogVersion": "0.84.3",
   "editorPaddingX": 2,
+  "quietStartup": true,
   "theme": "opencode_light/opencode_dark",
   "packages": [
     "git:github.com/paoloanzn/pi-black",

@@ -76,6 +76,7 @@ import {
   type SubagentRuntime,
 } from "./src/runtime.ts";
 import { openSubagentPicker, openSubagentTakeover } from "./src/ui/takeover.ts";
+import { formatWaitProgress } from "./src/wait-progress.ts";
 
 const SUBAGENT_OUTPUT_MAX_BYTES = 24 * 1024;
 const WAIT_OUTPUT_MAX_BYTES = 48 * 1024;
@@ -185,15 +186,16 @@ export default function (pi: ExtensionAPI) {
   };
 
   const updateStatus = (manager: SubagentManagerShape) => {
-    if (!ui) return;
     const subs = manager.view.list();
+    const running = subs.filter((snap) => snap.status === "running").length;
+    const failed = subs.filter((snap) => snap.status === "error").length;
+    const done = subs.length - running - failed;
+    pi.events?.emit("pi-ui:subagent-status", { running, done, failed });
+    if (!ui) return;
     if (subs.length === 0) {
       ui.setStatus("subagents", undefined);
       return;
     }
-    const running = subs.filter((snap) => snap.status === "running").length;
-    const failed = subs.filter((snap) => snap.status === "error").length;
-    const done = subs.length - running - failed;
     ui.setStatus(
       "subagents",
       formatActivityStatus(ui.theme, { running, done, failed }),
@@ -408,18 +410,47 @@ export default function (pi: ExtensionAPI) {
         );
       }
 
-      await runTool(
-        getRuntime(),
-        manager.waitFor(ids, (pending) => {
-          onUpdate?.({
-            content: [
-              { type: "text", text: `Waiting for ${pending.join(", ")}...` },
-            ],
-            details: { pending },
-          });
-        }),
-        { signal, interruptMessage: "Wait aborted. Subagents keep running." },
-      );
+      const waitingSince = Date.now();
+      const emitProgress = () => {
+        const snapshots = ids.flatMap((id) => {
+          const snap = manager.view.get(id);
+          if (!snap) return [];
+          return [{
+            id: snap.id,
+            title: snap.title,
+            status: snap.status,
+            backend: snap.backend,
+            modelLabel: snap.meta.modelLabel,
+            tokens: snap.usage.tokens,
+            contextWindow: snap.usage.contextWindow,
+            createdAt: snap.createdAt,
+            settledAt: snap.settledAt,
+            turns: snap.turns,
+            latestOutput: latestText(snap),
+            errorText: snap.errorText,
+          }];
+        });
+        const progress = formatWaitProgress(snapshots, waitingSince);
+        onUpdate?.({
+          content: [{ type: "text", text: progress.text }],
+          details: progress.details,
+        });
+      };
+      const unsubscribe = manager.view.subscribe(emitProgress);
+      const ticker = setInterval(emitProgress, 1000);
+      ticker.unref?.();
+
+      try {
+        emitProgress();
+        await runTool(
+          getRuntime(),
+          manager.waitFor(ids, () => emitProgress()),
+          { signal, interruptMessage: "Wait aborted. Subagents keep running." },
+        );
+      } finally {
+        clearInterval(ticker);
+        unsubscribe();
+      }
 
       // Settlement may have happened before this wait began. Remove any
       // deferred automatic delivery now that the tool is returning the result.

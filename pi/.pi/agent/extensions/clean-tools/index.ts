@@ -479,7 +479,9 @@ export function buildToolBlock(
 			line2,
 		];
 	}
-	if (expanded && !isPartial) lines.push(...expandedLines(name, rest, result));
+	if (!isPartial && (expanded || name === "edit" || name === "write" || name === "bash")) {
+		lines.push(...expandedLines(name, rest, result));
+	}
 	return lines;
 }
 
@@ -601,7 +603,20 @@ export function createTidyExtension(dependencies: TidyExtensionDependencies = {}
 					return withToolBackground(rows, _theme, "toolPendingBg", tidyBackground);
 				},
 				renderResult: (result: any, options: any, _theme: any, context: any) => {
-					if (options?.isPartial) return new Container();
+					if (options?.isPartial) {
+						// `subagent_wait` is a legitimately long-lived tool. Unlike
+						// ordinary tool updates, its streamed result IS the UI: show
+						// every child's live state and latest activity instead of the
+						// generic opaque "Working..." placeholder.
+						const progress = name === "subagent_wait" ? textFromResult(result) : "";
+						if (!progress) return new Container();
+						return withToolBackground(
+							new WidthAwareLines(() => progress.split("\n")),
+							_theme,
+							"toolPendingBg",
+							tidyBackground,
+						);
+					}
 					const isError = context?.isError ?? result?.isError ?? false;
 					const id = context?.toolCallId as string | undefined;
 					const started = startedAtByCallId.get(id ?? ""), timer = elapsedTimerByCallId.get(id ?? "");
@@ -643,6 +658,7 @@ export function createTidyExtension(dependencies: TidyExtensionDependencies = {}
 		});
 		pi.on("turn_end", async () => {
 			lastTurn = currentTurn; currentTurn = []; pathByCallId.clear(); startedAtByCallId.clear();
+			pi.events?.emit("pi-ui:turn-diff", { files: new Set(lastTurn.map(change => change.path)).size });
 			for (const timer of elapsedTimerByCallId.values()) clearInterval(timer); elapsedTimerByCallId.clear();
 		});
 		pi.on("session_shutdown", async () => {

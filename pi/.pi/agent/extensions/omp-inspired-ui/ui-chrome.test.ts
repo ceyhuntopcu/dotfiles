@@ -2,6 +2,7 @@ import { strict as assert } from "node:assert";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
+import * as chromeModule from "./ui-chrome.ts";
 import {
     composeStatusLine,
     formatContext,
@@ -48,9 +49,8 @@ test("formatContextRemaining reports what is left, not just what is used", () =>
 test("formatContextRemaining falls back to the window when usage is unknown", () => {
     assert.equal(formatContextRemaining(null, 200_000), "200k left · ?%");
 });
-
-test("formatContextRemaining never reports a negative remainder", () => {
-    assert.equal(formatContextRemaining(140, 200_000), "0 left · 100%");
+test("formatContextRemaining clamps overruns before rendering the critical warning", () => {
+    assert.equal(formatContextRemaining(140, 200_000), "⚠ 100%");
 });
 
 test("formatModelLabel includes the thinking level when it is active", () => {
@@ -225,4 +225,50 @@ test("composeStatusLine paints the fill as its own segment", () => {
     });
 
     assert.deepEqual(painted, ["model", "fill", "context"]);
+});
+
+test("formatContextRemaining warns at 60% and becomes compact at 85%", () => {
+    assert.equal(formatContextRemaining(59, 1_000_000), "410k left · 59%");
+    assert.equal(formatContextRemaining(60, 1_000_000), "⚠ 400k left · 60%");
+    assert.equal(formatContextRemaining(84, 1_000_000), "⚠ 160k left · 84%");
+    assert.equal(formatContextRemaining(85, 1_000_000), "⚠ 85%");
+});
+
+test("formatStatusBadges keeps git, subagents, and last-turn diff compact and ordered", () => {
+    const module = chromeModule as Record<string, unknown>;
+    assert.equal(typeof module.formatStatusBadges, "function");
+    const formatStatusBadges = module.formatStatusBadges as (input: unknown) => string | undefined;
+
+    assert.equal(
+        formatStatusBadges({
+            dirtyFiles: 3,
+            subagents: { running: 2, done: 1, failed: 1 },
+            diffFiles: 4,
+        }),
+        "±3 ◉2·✓1·×1 Δ4",
+    );
+    assert.equal(
+        formatStatusBadges({
+            dirtyFiles: 0,
+            subagents: { running: 0, done: 0, failed: 0 },
+            diffFiles: 0,
+        }),
+        undefined,
+    );
+});
+
+test("composeStatusLine places badges directly after the branch", () => {
+    const line = composeStatusLine(
+        {
+            model: "Terra",
+            path: "~/repo",
+            branch: "⑂ main",
+            badges: "±3 ◉2 Δ4",
+            context: "1M left · 0%",
+        } as Parameters<typeof composeStatusLine>[0],
+        80,
+        { separator: " › " },
+    );
+
+    assert.ok(line.includes("⑂ main › ±3 ◉2 Δ4"), line);
 });
