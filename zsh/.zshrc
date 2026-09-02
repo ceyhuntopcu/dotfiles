@@ -110,3 +110,6 @@ codex() {
   [[ "$(defaults read -g AppleInterfaceStyle 2>/dev/null)" == Dark ]] && theme=OpenCode-Dark
   command codex -c tui.theme="$theme" "$@"
 }
+
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
