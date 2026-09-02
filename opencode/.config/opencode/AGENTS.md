@@ -57,6 +57,12 @@ above and answer fully — that's the explicit verbose escape hatch.
 - Always strive for concise, simple solutions.
 - If a problem can be solved in a simpler way, propose it.
 
+## Comments
+
+- Never write long, verbose comments.
+- Only comment when it's absolutely necessary: non-obvious logic or hidden intent.
+- Keep comments short — one line, stating the "why", never narrating the "what".
+
 ## TypeScript
 
 - Never use `any` unless 100% necessary or specifically instructed.
