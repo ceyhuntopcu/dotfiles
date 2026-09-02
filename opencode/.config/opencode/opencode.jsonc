@@ -1,35 +1,44 @@
 {
   "$schema": "https://opencode.ai/config.json",
 
-  // Never use OpenCode-hosted models.
-  "disabled_providers": ["opencode"],
+  // Never use OpenCode-hosted models or OpenRouter.
+  "disabled_providers": ["opencode", "openrouter"],
 
   // Reuse subscription logins instead of separate API keys/billing:
   // - opencode-claude-auth reads Claude Code's stored OAuth token (org-sanctioned; coworker uses it).
   // - opencode-openai-codex-auth uses a ChatGPT Plus/Pro OAuth login (same idea, for GPT-5.6/Codex).
-  "plugin": [
-    "opencode-claude-auth@latest",
-    "opencode-openai-codex-auth@latest"
-  ],
+  "plugin": ["opencode-claude-auth@latest", "opencode-openai-codex-auth@latest"],
 
   // Default = Claude Opus 5 via the Claude Code subscription. Cheap background tasks stay on Kimi.
-  "model": "anthropic/claude-opus-5",
-  "small_model": "fireworks-ai/accounts/fireworks/models/kimi-k2p7-code",
+  "model": "openai/gpt-5.6-sol",
+  "small_model": "fireworks-ai/accounts/fireworks/models/glm-5p3-flash",
 
-  // Kimi 2.7 Code / K3 via Fireworks (OpenAI-compatible). Key added via `opencode auth login` -> Fireworks.
-  // OpenAI GPT-5.6 via the ChatGPT/Codex OAuth plugin above (like pi's `openai-codex` provider) —
-  // no separate API key, no OpenRouter route for these.
-  // Anthropic Opus 4.8 / Sonnet 5 via OpenRouter (note the '.' in model IDs, unlike Anthropic's own '-' IDs).
+  // Fireworks models via API key (`opencode auth login` -> Fireworks), OpenAI GPT-5.6 via the
+  // ChatGPT/Codex OAuth plugin above (like pi's `openai-codex` provider) — no separate API key.
+  // Anthropic models via the claude-auth OAuth plugin. `whitelist` prunes each provider's
+  // registry-discovered list down to only the models we actually use.
   "provider": {
+    "anthropic": {
+      "whitelist": ["claude-fable-5", "claude-fable-5-1", "claude-opus-5", "claude-sonnet-5"]
+    },
     "fireworks-ai": {
       "npm": "@ai-sdk/openai-compatible",
       "name": "Fireworks AI",
       "options": { "baseURL": "https://api.fireworks.ai/inference/v1" },
+      "whitelist": [
+        "accounts/fireworks/models/deepseek-v4-flash-0731",
+        "accounts/fireworks/models/deepseek-v4-pro",
+        "accounts/fireworks/models/kimi-k2p7-code",
+        "accounts/fireworks/models/kimi-k3",
+        "accounts/fireworks/models/glm-5p3",
+        "accounts/fireworks/models/glm-5p3-flash"
+      ],
       "models": {
         "accounts/fireworks/models/kimi-k2p7-code": { "name": "Kimi 2.7 Code" },
         "accounts/fireworks/models/kimi-k3": { "name": "Kimi K3" },
         "accounts/fireworks/models/deepseek-v4-pro": { "name": "DeepSeek V4 Pro" },
-        "accounts/fireworks/models/glm-5p2": { "name": "GLM 5.2" }
+        "accounts/fireworks/models/glm-5p3": { "name": "GLM 5.3" },
+        "accounts/fireworks/models/glm-5p3-flash": { "name": "GLM 5.3 Flash" }
       }
     },
     // ChatGPT Plus/Pro OAuth backend (opencode-openai-codex-auth), mirroring pi's openai-codex
@@ -42,6 +51,7 @@
         "include": ["reasoning.encrypted_content"],
         "store": false
       },
+      "whitelist": ["gpt-5.6-sol", "gpt-5.6-terra", "gpt-5.6-luna"],
       "models": {
         "gpt-5.6-sol": {
           "name": "GPT-5.6 Sol",
@@ -74,37 +84,18 @@
           }
         }
       }
-    },
-    "openrouter": {
-      "npm": "@openrouter/ai-sdk-provider",
-      "name": "OpenRouter",
-      "options": {},
-      "whitelist": [
-        "openai/gpt-5.5",
-        "anthropic/claude-opus-4.8",
-        "anthropic/claude-opus-5",
-        "anthropic/claude-sonnet-5",
-        "anthropic/claude-fable-5"
-      ],
-      "models": {
-        "openai/gpt-5.5": { "name": "GPT-5.5" },
-        "anthropic/claude-opus-4.8": { "name": "Claude Opus 4.8 (OpenRouter)" },
-        "anthropic/claude-opus-5": { "name": "Claude Opus 5 (OpenRouter)" },
-        "anthropic/claude-sonnet-5": { "name": "Claude Sonnet 5 (OpenRouter)" },
-        "anthropic/claude-fable-5": { "name": "Claude Fable 5 (OpenRouter)" }
-      }
     }
   },
 
   // Per-agent model overrides — build/plan stay on Anthropic (quality matters most
   // there); general/explore move off Anthropic so parallel bursts don't compete
   // with build and don't trigger "provider overloaded". title/summary/compaction
-  // are left alone — they already inherit small_model (Kimi).
+  // are left alone — they already inherit small_model (GLM 5.3 Flash).
   "agent": {
     "build": { "model": "anthropic/claude-opus-5" },
-    "plan": { "model": "anthropic/claude-opus-5" },
+    "plan": { "model": "anthropic/claude-fable-5" },
     "general": { "model": "openai/gpt-5.6-sol" },
-    "explore": { "model": "fireworks-ai/accounts/fireworks/models/kimi-k2p7-code" }
+    "explore": { "model": "fireworks-ai/accounts/fireworks/models/glm-5p3-flash" }
   },
 
   // Format-on-edit: run detected formatters (Biome, via biome.json) after writes.
