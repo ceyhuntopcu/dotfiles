@@ -113,3 +113,8 @@ codex() {
 
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
+
+export EDITOR="nvim"
+export VISUAL="nvim"
+
+alias lg="lazygit"

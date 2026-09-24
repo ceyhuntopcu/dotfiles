@@ -18,7 +18,7 @@
   "proxy": "",
   "cli_default_open_behavior": "existing_window",
   "session": {
-    "trust_all_worktrees": true,
+    "trust_all_worktrees": true
   },
   "theme": {
     "mode": "system",
@@ -40,18 +40,18 @@
   "diff_view_style": "split",
   "use_system_window_tabs": true,
   "file_finder": {
-    "file_icons": true,
+    "file_icons": true
   },
   "markdown_preview_font_family": "Inter",
   "completion_menu_item_kind": "symbol",
   // Font
-  "agent_buffer_font_size": 16.0,
-  "agent_ui_font_size": 17.0,
-  "ui_font_size": 17.0,
-  "buffer_font_size": 17.0,
+  "agent_buffer_font_size": 15.0,
+  "agent_ui_font_size": 15.0,
+  "ui_font_size": 15.0,
+  "buffer_font_size": 15.0,
   // "ui_font_family": "JetBrainsMono Nerd Font Mono",
   // "ui_font_family": "Braun Linear",
-  "ui_font_family": ".SystemUIFont",
+  "ui_font_family": "Berkeley Mono",
   "title_bar": {
     "show_branch_icon": true, // Show/hide branch icon beside branch switcher
     "show_branch_name": true, // Show/hide branch name
@@ -61,13 +61,13 @@
     "show_user_picture": false, // Show/hide user avatar
     "show_sign_in": false, // Show/hide sign-in button
     "show_menus": false, // Show/hide menus
-    "show_user_menu": false,
+    "show_user_menu": false
   },
   "relative_line_numbers": "disabled",
   "base_keymap": "VSCode",
   "telemetry": {
     "diagnostics": false,
-    "metrics": false,
+    "metrics": false
   },
   "vim_mode": false,
 
@@ -75,19 +75,20 @@
   // "buffer_font_family": "CommitMono",
   // "buffer_font_family": "JetBrainsMono Nerd Font Mono",
   "buffer_font_family": "Berkeley Mono",
+  // "buffer_font_family": "Paper Mono",
   "buffer_font_fallbacks": ["JetBrainsMono Nerd Font Mono"],
   "buffer_font_features": {
-    "zero": 1,
+    "zero": 1
   },
   "buffer_line_height": "comfortable",
   "current_line_highlight": "none",
   "centered_layout": {
     "left_padding": 0.125,
-    "right_padding": 0.125,
+    "right_padding": 0.125
   },
   "active_pane_modifiers": {
     "border_size": 0,
-    "inactive_opacity": 1.0,
+    "inactive_opacity": 1.0
   },
   "terminal": {
     "button": false,
@@ -95,7 +96,7 @@
     "font_fallbacks": ["JetBrainsMono Nerd Font Mono"],
     "blinking": "on",
     "default_height": 460,
-    "cursor_shape": "bar",
+    "cursor_shape": "bar"
   },
   "scrollbar": {
     "show": "never",
@@ -105,23 +106,23 @@
     "selected_symbol": false,
     "axes": {
       "horizontal": false,
-      "vertical": false,
-    },
+      "vertical": false
+    }
   },
   "search": {
-    "button": false,
+    "button": false
   },
   "git": {
     "git_gutter": "tracked_files",
     "inline_blame": {
       "enabled": true,
-      "delay_ms": 500,
-    },
+      "delay_ms": 500
+    }
   },
   "git_panel": {
     "dock": "left",
     "tree_view": true,
-    "button": true,
+    "button": true
   },
   "inline_code_actions": false,
   "gutter": {
@@ -129,47 +130,47 @@
     "runnables": false,
     "min_line_number_digits": 3,
     "folds": true,
-    "line_numbers": true,
+    "line_numbers": true
   },
   "indent_guides": {
-    "enabled": false,
+    "enabled": false
     // "coloring": "indent_aware",
     // "line_width": 1,
   },
   "vim": {
-    "use_system_clipboard": "always",
+    "use_system_clipboard": "always"
   },
   "project_panel": {
     "git_status": true,
     "button": true,
     "folder_icons": true,
     "indent_guides": {
-      "show": "never",
+      "show": "never"
     },
     "show_diagnostics": "errors",
     "sticky_scroll": false,
     "hide_root": true,
     "bold_folder_labels": false,
     "default_width": 375,
-    "dock": "left",
+    "dock": "left"
   },
   "outline_panel": {
     "dock": "right",
-    "button": false,
+    "button": false
   },
   "agent": {
-    "dock": "right",
+    "dock": "right"
   },
   // Top bar
   "toolbar": {
     "quick_actions": false,
     "breadcrumbs": false,
     "code_actions": false,
-    "selections_menu": false,
+    "selections_menu": false
   },
   // Status bar stuff
   "notification_panel": {
-    "button": false,
+    "button": false
   },
   "inlay_hints": {
     "enabled": false,
@@ -177,32 +178,32 @@
     "show_parameter_hints": true,
     "show_other_hints": true,
     "edit_debounce_ms": 700,
-    "scroll_debounce_ms": 100,
+    "scroll_debounce_ms": 100
   },
   "tab_bar": {
     "show_nav_history_buttons": false,
     "show": true,
-    "show_tab_bar_buttons": false,
+    "show_tab_bar_buttons": false
   },
   "tabs": {
     "file_icons": true,
     "close_position": "right",
-    "git_status": true,
+    "git_status": true
   },
   // Edit prediction
   "features": {
-    "edit_prediction_provider": "copilot",
+    "edit_prediction_provider": "copilot"
   },
   "show_edit_predictions": true,
   "max_tabs": null,
   "status_bar": {
     "active_language_button": false,
     "cursor_position_button": false,
-    "experimental.show": false,
+    "experimental.show": false
   },
   "collaboration_panel": {
     "dock": "right",
-    "button": false,
+    "button": false
   },
   "show_call_status_icon": false,
   // Error lens
@@ -211,18 +212,18 @@
     "inline": {
       "enabled": true,
       "update_debounce_ms": 500,
-      "max_severity": "error",
-    },
+      "max_severity": "error"
+    }
   },
   "diagnostics_max_severity": "warning",
   "jsx_tag_auto_close": {
-    "enabled": true,
+    "enabled": true
   },
   "global_lsp_settings": {
-    "button": false,
+    "button": false
   },
   "debugger": {
-    "button": false,
+    "button": false
   },
   "semantic_tokens": "combined",
   // Format on save with Biome (matches project biome.json + pnpm format)
@@ -230,20 +231,20 @@
   "languages": {
     "TypeScript": {
       "formatter": { "language_server": { "name": "biome" } },
-      "code_actions_on_format": { "source.fixAll.biome": true },
+      "code_actions_on_format": { "source.fixAll.biome": true }
     },
     "TSX": {
       "formatter": { "language_server": { "name": "biome" } },
-      "code_actions_on_format": { "source.fixAll.biome": true },
+      "code_actions_on_format": { "source.fixAll.biome": true }
     },
     "JavaScript": {
-      "formatter": { "language_server": { "name": "biome" } },
+      "formatter": { "language_server": { "name": "biome" } }
     },
     "JSON": {
-      "formatter": { "language_server": { "name": "biome" } },
+      "formatter": { "language_server": { "name": "biome" } }
     },
     "JSONC": {
-      "formatter": { "language_server": { "name": "biome" } },
-    },
-  },
+      "formatter": { "language_server": { "name": "biome" } }
+    }
+  }
 }

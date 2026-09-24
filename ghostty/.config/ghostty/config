@@ -1,8 +1,8 @@
 # Ghostty config.
 # Reload with: Cmd+Shift+, in Ghostty (or restart).
 
-# Theme — OpenCode default (dark / light)
-theme = dark:OpenCode-Dark,light:OpenCode-Light
+# Theme — matches nvim colorscheme (Tokyonight Night dark / Catppuccin Latte light)
+theme = dark:TokyoNight Night,light:Catppuccin Latte
 
 # Font — Berkeley Mono (licensed). JetBrainsMono Nerd Font kept as fallback for prompt/icon glyphs.
 font-family = "Berkeley Mono"
