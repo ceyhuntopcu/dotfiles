@@ -6,37 +6,27 @@
 
   // Reuse subscription logins instead of separate API keys/billing:
   // - opencode-claude-auth reads Claude Code's stored OAuth token (org-sanctioned; coworker uses it).
-  // - opencode-openai-codex-auth uses a ChatGPT Plus/Pro OAuth login (same idea, for GPT-5.6/Codex).
+  // - opencode-openai-codex-auth uses a ChatGPT Plus/Pro OAuth login (same idea, for GPT-6/Codex).
   "plugin": ["opencode-claude-auth@latest", "opencode-openai-codex-auth@latest"],
 
-  // Default = Claude Opus 5 via the Claude Code subscription. Cheap background tasks stay on Kimi.
-  "model": "openai/gpt-5.6-sol",
+  // Default = GPT-6 Sol via the ChatGPT/Codex subscription. Cheap background tasks stay on GLM 5.3 Flash.
+  "model": "openai/gpt-6-sol",
   "small_model": "fireworks-ai/accounts/fireworks/models/glm-5p3-flash",
 
-  // Fireworks models via API key (`opencode auth login` -> Fireworks), OpenAI GPT-5.6 via the
+  // Fireworks models via API key (`opencode auth login` -> Fireworks), OpenAI GPT-6 via the
   // ChatGPT/Codex OAuth plugin above (like pi's `openai-codex` provider) — no separate API key.
   // Anthropic models via the claude-auth OAuth plugin. `whitelist` prunes each provider's
   // registry-discovered list down to only the models we actually use.
   "provider": {
     "anthropic": {
-      "whitelist": ["claude-fable-5", "claude-fable-5-1", "claude-opus-5", "claude-sonnet-5"]
+      "whitelist": ["claude-opus-5-5", "claude-fable-5-1", "claude-sonnet-5"]
     },
     "fireworks-ai": {
       "npm": "@ai-sdk/openai-compatible",
       "name": "Fireworks AI",
       "options": { "baseURL": "https://api.fireworks.ai/inference/v1" },
-      "whitelist": [
-        "accounts/fireworks/models/deepseek-v4-flash-0731",
-        "accounts/fireworks/models/deepseek-v4-pro",
-        "accounts/fireworks/models/kimi-k2p7-code",
-        "accounts/fireworks/models/kimi-k3",
-        "accounts/fireworks/models/glm-5p3",
-        "accounts/fireworks/models/glm-5p3-flash"
-      ],
+      "whitelist": ["accounts/fireworks/models/glm-5p3", "accounts/fireworks/models/glm-5p3-flash"],
       "models": {
-        "accounts/fireworks/models/kimi-k2p7-code": { "name": "Kimi 2.7 Code" },
-        "accounts/fireworks/models/kimi-k3": { "name": "Kimi K3" },
-        "accounts/fireworks/models/deepseek-v4-pro": { "name": "DeepSeek V4 Pro" },
         "accounts/fireworks/models/glm-5p3": { "name": "GLM 5.3" },
         "accounts/fireworks/models/glm-5p3-flash": { "name": "GLM 5.3 Flash" }
       }
@@ -51,36 +41,42 @@
         "include": ["reasoning.encrypted_content"],
         "store": false
       },
-      "whitelist": ["gpt-5.6-sol", "gpt-5.6-terra", "gpt-5.6-luna"],
+      "whitelist": ["gpt-6-astra", "gpt-6-sol", "gpt-6-terra"],
       "models": {
-        "gpt-5.6-sol": {
-          "name": "GPT-5.6 Sol",
+        "gpt-6-sol": {
+          "name": "GPT-6 Sol",
           "limit": { "context": 1050000, "output": 128000 },
           "modalities": { "input": ["text", "image"], "output": ["text"] },
           "variants": {
             "low": { "reasoningEffort": "low", "reasoningSummary": "auto", "textVerbosity": "medium" },
             "medium": { "reasoningEffort": "medium", "reasoningSummary": "auto", "textVerbosity": "medium" },
-            "high": { "reasoningEffort": "high", "reasoningSummary": "detailed", "textVerbosity": "medium" }
+            "high": { "reasoningEffort": "high", "reasoningSummary": "detailed", "textVerbosity": "medium" },
+            "xhigh": { "reasoningEffort": "xhigh", "reasoningSummary": "detailed", "textVerbosity": "medium" },
+            "max": { "reasoningEffort": "max", "reasoningSummary": "detailed", "textVerbosity": "medium" }
           }
         },
-        "gpt-5.6-terra": {
-          "name": "GPT-5.6 Terra",
+        "gpt-6-terra": {
+          "name": "GPT-6 Terra",
           "limit": { "context": 1050000, "output": 128000 },
           "modalities": { "input": ["text", "image"], "output": ["text"] },
           "variants": {
             "low": { "reasoningEffort": "low", "reasoningSummary": "auto", "textVerbosity": "medium" },
             "medium": { "reasoningEffort": "medium", "reasoningSummary": "auto", "textVerbosity": "medium" },
-            "high": { "reasoningEffort": "high", "reasoningSummary": "detailed", "textVerbosity": "medium" }
+            "high": { "reasoningEffort": "high", "reasoningSummary": "detailed", "textVerbosity": "medium" },
+            "xhigh": { "reasoningEffort": "xhigh", "reasoningSummary": "detailed", "textVerbosity": "medium" },
+            "max": { "reasoningEffort": "max", "reasoningSummary": "detailed", "textVerbosity": "medium" }
           }
         },
-        "gpt-5.6-luna": {
-          "name": "GPT-5.6 Luna",
+        "gpt-6-astra": {
+          "name": "GPT-6 Astra",
           "limit": { "context": 1050000, "output": 128000 },
           "modalities": { "input": ["text", "image"], "output": ["text"] },
           "variants": {
             "low": { "reasoningEffort": "low", "reasoningSummary": "auto", "textVerbosity": "medium" },
             "medium": { "reasoningEffort": "medium", "reasoningSummary": "auto", "textVerbosity": "medium" },
-            "high": { "reasoningEffort": "high", "reasoningSummary": "detailed", "textVerbosity": "medium" }
+            "high": { "reasoningEffort": "high", "reasoningSummary": "detailed", "textVerbosity": "medium" },
+            "xhigh": { "reasoningEffort": "xhigh", "reasoningSummary": "detailed", "textVerbosity": "medium" },
+            "max": { "reasoningEffort": "max", "reasoningSummary": "detailed", "textVerbosity": "medium" }
           }
         }
       }
@@ -92,9 +88,9 @@
   // with build and don't trigger "provider overloaded". title/summary/compaction
   // are left alone — they already inherit small_model (GLM 5.3 Flash).
   "agent": {
-    "build": { "model": "anthropic/claude-opus-5" },
-    "plan": { "model": "anthropic/claude-fable-5" },
-    "general": { "model": "openai/gpt-5.6-sol" },
+    "build": { "model": "anthropic/claude-opus-5-5" },
+    "plan": { "model": "anthropic/claude-fable-5-1" },
+    "general": { "model": "openai/gpt-6-sol" },
     "explore": { "model": "fireworks-ai/accounts/fireworks/models/glm-5p3-flash" }
   },
 
